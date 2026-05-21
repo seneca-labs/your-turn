@@ -111,6 +111,29 @@ export function voteBar(el: HTMLElement, percent: number, durationMs = 2400) {
   });
 }
 
+/**
+ * iOS-style notification arrival: drops from above with a subtle bounce
+ * and a soft shadow swell. Tuned for the lock-screen notification card.
+ */
+export function notificationArrive(
+  target: anime.AnimeAnimParams["targets"],
+  delay = 0,
+) {
+  return anime({
+    targets: target,
+    translateY: [-24, 0],
+    scale: [0.96, 1],
+    opacity: [0, 1],
+    boxShadow: [
+      "0 0px 0px rgba(10,10,10,0)",
+      "0 18px 42px rgba(10,10,10,0.18)",
+    ],
+    duration: 720,
+    delay,
+    easing: "cubicBezier(0.16, 1, 0.3, 1)",
+  });
+}
+
 export function glowOnce(target: anime.AnimeAnimParams["targets"]) {
   return anime({
     targets: target,
