@@ -52,21 +52,23 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Concrete texture — dark dots on white (paper register) */
 .asphalt-bg {
-  background-color: #0A0A0A;
+  background-color: #FFFFFF;
   background-image:
-    radial-gradient(rgba(245, 242, 235, 0.05) 1px, transparent 1px),
-    radial-gradient(rgba(245, 242, 235, 0.025) 1px, transparent 1px);
+    radial-gradient(rgba(10, 10, 10, 0.07) 1px, transparent 1px),
+    radial-gradient(rgba(10, 10, 10, 0.035) 1px, transparent 1px);
   background-size: 3px 3px, 7px 7px;
   background-position: 0 0, 1px 2px;
 }
 
+/* Card grain — bone surface with subtle line grain */
 .concrete-bg {
-  background-color: #1A1A1A;
+  background-color: #F5F2EB;
   background-image: repeating-linear-gradient(
     0deg,
-    rgba(255, 255, 255, 0.012) 0px,
-    rgba(255, 255, 255, 0.012) 1px,
+    rgba(10, 10, 10, 0.03) 0px,
+    rgba(10, 10, 10, 0.03) 1px,
     transparent 1px,
     transparent 3px
   );
