@@ -21,7 +21,7 @@ export default function TeamPage() {
   }, []);
 
   return (
-    <PhoneFrame bg="#0A0A0A">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="relative h-full overflow-y-auto no-scrollbar">
         {/* Hero */}
@@ -37,14 +37,14 @@ export default function TeamPage() {
             <div className="font-mono text-[10px] tracking-label uppercase text-sweat mb-1">
               Crew · est. 2025
             </div>
-            <h1 className="display-tight text-bone text-[64px] leading-[0.85]">
+            <h1 className="display-tight text-jordan-black text-[64px] leading-[0.85]">
               THE
               <br />
               LANDLORDS
             </h1>
             <div className="mt-3 flex items-center gap-2">
               <Jumpman size={18} className="text-varsity" />
-              <span className="font-mono text-[10px] tracking-hud uppercase text-bone/80">
+              <span className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/80">
                 West 4th · Greenwich Village
               </span>
             </div>
@@ -90,10 +90,10 @@ export default function TeamPage() {
                 <div className="absolute inset-0 asphalt-bg opacity-30" />
                 <div className="absolute inset-0 flex items-end p-2">
                   <div className="space-y-1">
-                    <div className="font-mono text-[8px] tracking-hud uppercase text-bone/60">
+                    <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/60">
                       {h.player}
                     </div>
-                    <div className="display-tight text-bone text-[10px] leading-tight">
+                    <div className="display-tight text-jordan-black text-[10px] leading-tight">
                       {h.caption}
                     </div>
                     <div className="flex items-center gap-1 text-hype">
@@ -116,11 +116,11 @@ export default function TeamPage() {
             <div className="display-tight text-win-gold text-[24px]">
               WEST 4TH · COURT 3
             </div>
-            <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-bone/60">
+            <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-jordan-black/60">
               Conquered 14 days · No challenge stands
             </div>
           </div>
-          <button className="w-full py-3 rounded-xs border border-bone/30 font-mono text-[11px] tracking-hud uppercase text-bone hover:border-bone">
+          <button className="w-full py-3 rounded-xs border border-jordan-black/30 font-mono text-[11px] tracking-hud uppercase text-jordan-black hover:border-jordan-black">
             Challenge Team
           </button>
         </div>
@@ -137,7 +137,7 @@ function RecordCell({ label, value, accent = false }: { label: string; value: st
       </div>
       <div
         className={`display-tight text-[34px] tabular ${
-          accent ? "text-win-gold" : "text-bone"
+          accent ? "text-win-gold" : "text-jordan-black"
         }`}
       >
         {value}

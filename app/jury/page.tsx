@@ -42,7 +42,7 @@ export default function JuryPage() {
   }, [voters]);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg opacity-40" />
       <div className="relative h-full flex flex-col px-5 pt-12 pb-8">
@@ -62,7 +62,7 @@ export default function JuryPage() {
         <div className="flex-1 flex items-center justify-center">
           <h1
             ref={questionRef}
-            className="display-tight text-bone text-[58px] leading-[0.9] text-center"
+            className="display-tight text-jordan-black text-[58px] leading-[0.9] text-center"
           />
         </div>
 
@@ -70,13 +70,13 @@ export default function JuryPage() {
         <div className="grid grid-cols-2 gap-3 mb-4">
           <button
             disabled={locked}
-            className="display-tight text-[44px] py-6 rounded-xs bg-jordan-black border border-bone text-bone hover:bg-bone hover:text-jordan-black transition-colors"
+            className="display-tight text-[44px] py-6 rounded-xs bg-jordan-black text-white hover:bg-varsity transition-colors"
           >
             YES
           </button>
           <button
             disabled={locked}
-            className="display-tight text-[44px] py-6 rounded-xs bg-bone border border-bone text-jordan-black hover:bg-jordan-black hover:text-bone transition-colors"
+            className="display-tight text-[44px] py-6 rounded-xs bg-white border border-jordan-black text-jordan-black hover:bg-jordan-black hover:text-white transition-colors"
           >
             NO
           </button>
@@ -85,24 +85,24 @@ export default function JuryPage() {
         {/* Vote bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
-            <span className="text-bone/70">Yes</span>
-            <span className="text-bone/70">No</span>
+            <span className="text-jordan-black/70">Yes</span>
+            <span className="text-jordan-black/70">No</span>
           </div>
-          <div className="relative h-2.5 rounded-xs bg-bone/10 overflow-hidden flex">
+          <div className="relative h-2.5 rounded-xs bg-jordan-black/10 overflow-hidden flex">
             <div ref={yesRef} className="h-full bg-varsity" style={{ width: 0 }} />
-            <div ref={noRef} className="h-full bg-bone" style={{ width: 0 }} />
+            <div ref={noRef} className="h-full bg-jordan-black" style={{ width: 0 }} />
             <div className="lock-flash absolute inset-0 bg-win-gold opacity-0 pointer-events-none" />
           </div>
           <div className="flex items-center justify-between font-mono text-[11px] tracking-hud tabular">
             <span className="text-varsity">27%</span>
-            <span className="text-bone">73%</span>
+            <span className="text-jordan-black">73%</span>
           </div>
         </div>
 
         {/* Live voters / result */}
         <div className="mt-4 flex items-center justify-between font-mono text-[10px] tracking-label uppercase">
           <span className="text-sweat">
-            <span ref={tickerRef} className="text-bone tabular">
+            <span ref={tickerRef} className="text-jordan-black tabular">
               0
             </span>{" "}
             voting
@@ -110,7 +110,7 @@ export default function JuryPage() {
           {locked ? (
             <span className="text-win-gold">Result · No Foul</span>
           ) : (
-            <span className="text-bone/60">Tallying</span>
+            <span className="text-jordan-black/60">Tallying</span>
           )}
         </div>
       </div>

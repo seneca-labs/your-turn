@@ -28,18 +28,18 @@ export default function LeaderboardPage() {
   const list = tab === "court" ? leaderboardCourt : leaderboardCity;
 
   return (
-    <PhoneFrame bg="#0A0A0A">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="relative h-full flex flex-col">
         {/* Header */}
         <div className="pt-3 px-4 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
           <div className="flex items-center gap-2">
             <Jumpman size={14} className="text-varsity" />
-            <span className="text-bone/80">Leaderboard</span>
+            <span className="text-jordan-black/80">Leaderboard</span>
           </div>
           <button
             onClick={() => setView(view === "list" ? "map" : "list")}
-            className="px-2 py-1 rounded-xs border border-bone/30 text-bone hover:border-bone"
+            className="px-2 py-1 rounded-xs border border-jordan-black/30 text-jordan-black hover:border-jordan-black"
           >
             {view === "list" ? "Map" : "List"}
           </button>
@@ -53,8 +53,8 @@ export default function LeaderboardPage() {
               onClick={() => setTab(t)}
               className={`flex-shrink-0 px-3 py-1.5 rounded-xs font-mono text-[10px] tracking-hud uppercase border ${
                 tab === t
-                  ? "border-varsity text-bone bg-varsity/10"
-                  : "border-bone/20 text-bone/60"
+                  ? "border-varsity text-jordan-black bg-varsity/10"
+                  : "border-jordan-black/20 text-jordan-black/60"
               }`}
             >
               {t}
@@ -83,13 +83,13 @@ export default function LeaderboardPage() {
               >
                 <span
                   className={`display-tight w-10 text-center tabular text-[28px] ${
-                    row.rank <= 3 ? "text-win-gold" : "text-bone/50"
+                    row.rank <= 3 ? "text-win-gold" : "text-jordan-black/50"
                   }`}
                 >
                   {String(row.rank).padStart(2, "0")}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="font-mono text-[12px] tracking-hud uppercase text-bone truncate">
+                  <div className="font-mono text-[12px] tracking-hud uppercase text-jordan-black truncate">
                     {row.nickname}
                   </div>
                   <div className="font-mono text-[9px] tracking-hud uppercase text-sweat">
@@ -97,7 +97,7 @@ export default function LeaderboardPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-mono text-[11px] tabular text-bone">
+                  <div className="font-mono text-[11px] tabular text-jordan-black">
                     {row.record}
                   </div>
                   {row.streak > 0 && (
@@ -157,7 +157,7 @@ export default function LeaderboardPage() {
                         y={yShifted + 3}
                         fontFamily="var(--font-ibm-plex-mono), monospace"
                         fontSize="7"
-                        fill="#F5F2EB"
+                        fill="#0A0A0A"
                         letterSpacing="1"
                       >
                         {c.name.split(" ")[0].toUpperCase()}
@@ -167,7 +167,7 @@ export default function LeaderboardPage() {
                 })}
               </svg>
               {/* Legend */}
-              <div className="absolute bottom-2 left-2 right-2 hairline rounded-xs bg-jordan-black/80 backdrop-blur-sm p-3 font-mono text-[9px] tracking-hud uppercase">
+              <div className="absolute bottom-2 left-2 right-2 hairline rounded-xs bg-white/80 backdrop-blur-sm p-3 font-mono text-[9px] tracking-hud uppercase">
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="flex items-center gap-1.5 text-win-gold">
                     <span className="h-2 w-2 rounded-full bg-win-gold" /> Conquered

@@ -126,11 +126,11 @@ export default function Landing() {
         <header className="flex items-center justify-between mb-16 font-mono text-[10px] tracking-hud uppercase">
           <div className="flex items-center gap-2">
             <Jumpman size={18} className="text-varsity" />
-            <span className="text-bone/80">Your Turn / Jordan</span>
+            <span className="text-jordan-black/80">Your Turn / Jordan</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sweat hidden sm:inline">NYC · 8:42</span>
-            <Clock className="text-bone/60 text-[10px]" />
+            <Clock className="text-jordan-black/60 text-[10px]" />
           </div>
         </header>
 
@@ -141,7 +141,7 @@ export default function Landing() {
             BD Concept · Capabilities Prototype
           </div>
 
-          <h1 className="display-tight text-bone text-[96px] sm:text-[128px] leading-[0.82] mb-2">
+          <h1 className="display-tight text-jordan-black text-[96px] sm:text-[128px] leading-[0.82] mb-2">
             <div className="hero-stagger">YOUR</div>
             <div className="hero-stagger relative inline-block">
               <span className="text-varsity">TURN</span>
@@ -155,7 +155,7 @@ export default function Landing() {
           </h1>
 
           <div className="hero-stagger mt-4 max-w-md">
-            <div className="font-mono text-[13px] tracking-hud uppercase text-bone/85 leading-relaxed">
+            <div className="font-mono text-[13px] tracking-hud uppercase text-jordan-black/85 leading-relaxed">
               Streetball identity, scored.
               <br />
               Court-to-city ladder. Crowd-judged.
@@ -171,14 +171,14 @@ export default function Landing() {
           <div className="hero-stagger mt-8 flex flex-col sm:flex-row gap-3">
             <Link
               href="/demo"
-              className="group inline-flex items-center justify-between gap-4 px-5 py-3 rounded-xs bg-varsity font-mono text-[11px] tracking-hud uppercase text-bone font-bold"
+              className="group inline-flex items-center justify-between gap-4 px-5 py-3 rounded-xs bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold"
             >
               <span>Run Demo Cycle</span>
-              <Jumpman size={18} className="text-bone group-hover:translate-x-1 transition-transform" />
+              <Jumpman size={18} className="text-jordan-black group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/notification"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xs border border-bone/30 font-mono text-[11px] tracking-hud uppercase text-bone hover:border-bone"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xs border border-jordan-black/30 font-mono text-[11px] tracking-hud uppercase text-jordan-black hover:border-jordan-black"
             >
               <span>Enter Scene 1</span>
               <svg width="12" height="9" viewBox="0 0 14 10" fill="none">
@@ -241,11 +241,11 @@ function ScreenGroup({
               <Jumpman size={64} />
             </span>
 
-            <span className="display-tight text-bone/40 text-[26px] tabular w-10 text-center group-hover:text-varsity transition-colors">
+            <span className="display-tight text-jordan-black/40 text-[26px] tabular w-10 text-center group-hover:text-varsity transition-colors">
               {String(s.num).padStart(2, "0")}
             </span>
             <div className="flex-1 min-w-0 relative">
-              <div className="font-mono text-[12px] tracking-hud uppercase text-bone">
+              <div className="font-mono text-[12px] tracking-hud uppercase text-jordan-black">
                 {s.title}
               </div>
               {s.note && (
@@ -259,7 +259,7 @@ function ScreenGroup({
               height="10"
               viewBox="0 0 14 10"
               fill="none"
-              className="text-bone/40 group-hover:text-varsity group-hover:animate-nudge-right relative"
+              className="text-jordan-black/40 group-hover:text-varsity group-hover:animate-nudge-right relative"
             >
               <path d="M1 5 H12 M9 1 L13 5 L9 9" stroke="currentColor" strokeWidth="1.4" />
             </svg>

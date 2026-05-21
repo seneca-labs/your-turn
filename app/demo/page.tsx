@@ -30,41 +30,41 @@ export default function Demo() {
   const route = demoOrder[idx];
 
   return (
-    <div className="min-h-dvh bg-[#050505] flex flex-col">
+    <div className="min-h-dvh bg-[#EAE7E0] flex flex-col">
       {/* HUD bar */}
       <header className="flex items-center justify-between px-4 py-3 hairline-b">
         <div className="flex items-center gap-2 font-mono text-[10px] tracking-hud uppercase">
           <Jumpman size={14} className="text-varsity" />
-          <span className="text-bone/80">Demo Cycle</span>
+          <span className="text-jordan-black/80">Demo Cycle</span>
           <span className="text-sweat tabular">
             {String(idx + 1).padStart(2, "0")} / {String(demoOrder.length).padStart(2, "0")}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[10px] tracking-hud uppercase text-bone/60 hidden sm:inline">
+          <span className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/60 hidden sm:inline">
             {route}
           </span>
           <button
             onClick={() => setPaused((p) => !p)}
-            className="px-2 py-1 rounded-xs border border-bone/30 font-mono text-[10px] tracking-hud uppercase text-bone hover:border-bone"
+            className="px-2 py-1 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black"
           >
             {paused ? "Play" : "Pause"}
           </button>
           <button
             onClick={() => setIdx((i) => (i + demoOrder.length - 1) % demoOrder.length)}
-            className="px-2 py-1 rounded-xs border border-bone/30 font-mono text-[10px] tracking-hud uppercase text-bone hover:border-bone"
+            className="px-2 py-1 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black"
           >
             Prev
           </button>
           <button
             onClick={() => setIdx((i) => (i + 1) % demoOrder.length)}
-            className="px-2 py-1 rounded-xs border border-bone/30 font-mono text-[10px] tracking-hud uppercase text-bone hover:border-bone"
+            className="px-2 py-1 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black"
           >
             Next
           </button>
           <Link
             href="/"
-            className="px-2 py-1 rounded-xs border border-bone/30 font-mono text-[10px] tracking-hud uppercase text-bone hover:border-bone"
+            className="px-2 py-1 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black"
           >
             Exit
           </Link>
@@ -72,7 +72,7 @@ export default function Demo() {
       </header>
 
       {/* Progress bar */}
-      <div className="h-0.5 bg-bone/10 relative">
+      <div className="h-0.5 bg-jordan-black/10 relative">
         <div ref={progressRef} className="h-full bg-varsity" style={{ width: "0%" }} />
       </div>
 

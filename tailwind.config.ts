@@ -41,9 +41,9 @@ const config: Config = {
         "tight-display": "0.9",
       },
       boxShadow: {
-        card: "0 0 0 1px rgba(255,255,255,0.06)",
-        "glow-varsity": "0 0 24px rgba(206,17,38,0.4)",
-        "glow-gold": "0 0 32px rgba(212,169,56,0.45)",
+        card: "0 0 0 1px rgba(10,10,10,0.06)",
+        "glow-varsity": "0 0 24px rgba(206,17,38,0.25)",
+        "glow-gold": "0 0 32px rgba(184,144,42,0.30)",
       },
       keyframes: {
         "live-pulse": {

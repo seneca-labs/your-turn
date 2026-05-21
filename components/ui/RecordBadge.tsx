@@ -15,7 +15,7 @@ export function RecordBadge({
   return (
     <span
       className={`inline-flex items-center gap-2 font-mono text-[12px] tracking-hud tabular ${
-        showStreak ? "text-win-gold" : "text-bone"
+        showStreak ? "text-win-gold" : "text-jordan-black"
       } ${className}`}
     >
       <span>

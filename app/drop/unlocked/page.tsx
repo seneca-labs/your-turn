@@ -75,7 +75,7 @@ export default function DropUnlocked() {
   }, []);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
 
       {/* Layer 1 — radial gold glow */}
@@ -146,13 +146,13 @@ export default function DropUnlocked() {
         <div className="text-center w-full relative">
           <h1
             ref={titleRef}
-            className="display-tight text-bone text-[34px] leading-[0.9]"
+            className="display-tight text-jordan-black text-[34px] leading-[0.9]"
           />
           <div className="mt-3 flex items-center justify-center gap-3 font-mono text-[10px] tracking-hud uppercase">
-            <span className="text-bone/70">Colorway</span>
+            <span className="text-jordan-black/70">Colorway</span>
             <span className="inline-block h-3 w-3 rounded-full bg-varsity" />
-            <span className="inline-block h-3 w-3 rounded-full bg-jordan-black border border-bone/30" />
-            <span className="text-bone">Black / Varsity Red</span>
+            <span className="inline-block h-3 w-3 rounded-full bg-white border border-jordan-black/30" />
+            <span className="text-jordan-black">Black / Varsity Red</span>
           </div>
           <div className="mt-2 font-mono text-[9px] tracking-label uppercase text-sweat">
             Earned for holding the court 10 days
@@ -160,8 +160,8 @@ export default function DropUnlocked() {
 
           {/* CTAs */}
           <div className="mt-6 grid grid-cols-2 gap-2">
-            <button className="py-3 rounded-xs border border-bone/30 font-mono text-[10px] tracking-hud uppercase text-bone hover:border-bone flex items-center justify-center gap-2">
-              <Wing size={12} className="text-bone" />
+            <button className="py-3 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black flex items-center justify-center gap-2">
+              <Wing size={12} className="text-jordan-black" />
               Share
             </button>
             <button className="py-3 rounded-xs bg-win-gold text-jordan-black font-mono text-[10px] tracking-hud uppercase font-bold flex items-center justify-center gap-2">

@@ -35,19 +35,19 @@ export default function FeedPage() {
   }, [showStats]);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg opacity-50" />
 
       {/* Top HUD */}
-      <div className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase bg-gradient-to-b from-jordan-black/80 to-transparent pb-6">
-        <div className="flex items-center gap-2 text-bone/80">
+      <div className="absolute top-0 left-0 right-0 z-30 px-4 pt-3 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase bg-gradient-to-b from-white/85 to-transparent pb-6">
+        <div className="flex items-center gap-2 text-jordan-black/80">
           <Jumpman size={14} className="text-varsity" />
           <span>Feed</span>
         </div>
-        <div className="flex gap-3 text-bone/60">
+        <div className="flex gap-3 text-jordan-black/60">
           <span>Fresh</span>
-          <span className="text-bone">Following</span>
+          <span className="text-jordan-black">Following</span>
           <span>Hot</span>
         </div>
       </div>
@@ -64,13 +64,13 @@ export default function FeedPage() {
               <div
                 className="absolute inset-0"
                 style={{
-                  background: `linear-gradient(135deg, rgba(206,17,38,${0.10 + i * 0.05}), rgba(0,0,0,0.5)), repeating-linear-gradient(45deg, rgba(245,242,235,0.04) 0px, rgba(245,242,235,0.04) 1px, transparent 1px, transparent 6px)`,
+                  background: `linear-gradient(135deg, rgba(206,17,38,${0.10 + i * 0.05}), rgba(0,0,0,0.5)), repeating-linear-gradient(45deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 6px)`,
                 }}
               />
               {/* Ken-burns motion vignette */}
-              <div className="absolute inset-0 bg-gradient-to-t from-jordan-black via-jordan-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
               {/* "playing" indicator */}
-              <div className="absolute top-12 left-4 flex items-center gap-2 font-mono text-[9px] tracking-hud uppercase text-bone/70">
+              <div className="absolute top-12 left-4 flex items-center gap-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/70">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-hype animate-live-pulse" />
                 Playing · 00:0{i + 4}
               </div>
@@ -79,10 +79,10 @@ export default function FeedPage() {
             {/* Bottom left meta */}
             <div className="relative z-10 max-w-[68%] space-y-2">
               <NicknamePill name={h.player} size="sm" variant={h.player.includes("SHADOW") ? "self" : "default"} />
-              <div className="font-mono text-[10px] tracking-hud uppercase text-bone/80">
+              <div className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/80">
                 {h.court.toUpperCase().replace("-", " ")} · {h.timestamp}
               </div>
-              <h2 className="display-tight text-bone text-[36px] leading-[0.9]">
+              <h2 className="display-tight text-jordan-black text-[36px] leading-[0.9]">
                 {h.caption}
               </h2>
             </div>
@@ -101,7 +101,7 @@ export default function FeedPage() {
       {showStats && (
         <div
           ref={overlayRef}
-          className="absolute bottom-0 left-0 right-0 z-40 hairline-t bg-jordan-black/95 backdrop-blur-md p-4"
+          className="absolute bottom-0 left-0 right-0 z-40 hairline-t bg-white/95 backdrop-blur-md p-4"
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function FeedPage() {
             </div>
             <button
               onClick={() => setShowStats(false)}
-              className="font-mono text-[10px] tracking-hud uppercase text-sweat hover:text-bone"
+              className="font-mono text-[10px] tracking-hud uppercase text-sweat hover:text-jordan-black"
             >
               Close
             </button>
@@ -124,7 +124,7 @@ export default function FeedPage() {
           </div>
           <div className="flex items-center gap-2 px-3 py-2 rounded-xs border border-win-gold bg-win-gold/10">
             <span className="display-tight text-win-gold text-[14px]">NEW DROP</span>
-            <span className="font-mono text-[10px] tracking-hud uppercase text-bone">
+            <span className="font-mono text-[10px] tracking-hud uppercase text-jordan-black">
               AIR JORDAN 1 / WEST 4TH unlocked
             </span>
           </div>
@@ -143,10 +143,10 @@ function ReactionButton({
   count: number;
   color: "hype" | "bone" | "pg-dim";
 }) {
-  const colorClass = color === "hype" ? "text-hype" : color === "pg-dim" ? "text-pg-dim" : "text-bone";
+  const colorClass = color === "hype" ? "text-hype" : color === "pg-dim" ? "text-sweat" : "text-jordan-black";
   return (
     <button className={`flex flex-col items-center gap-1 ${colorClass}`}>
-      <span className="h-9 w-9 rounded-xs border border-current/40 flex items-center justify-center bg-jordan-black/60">
+      <span className="h-9 w-9 rounded-xs border border-current/40 flex items-center justify-center bg-white/60">
         {icon}
       </span>
       <span className="font-mono text-[9px] tabular tracking-hud">{count}</span>
@@ -172,7 +172,7 @@ function StatChip({
       </div>
       <span
         ref={valueRef}
-        className={`display-tight text-[22px] tabular ${accent ? "text-win-gold" : "text-bone"}`}
+        className={`display-tight text-[22px] tabular ${accent ? "text-win-gold" : "text-jordan-black"}`}
       >
         {initial}
       </span>

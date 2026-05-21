@@ -62,14 +62,14 @@ export default function CourtLivePage() {
   ];
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg" />
       {/* Status bar / hud */}
       <div className="relative pt-3 px-4 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
         <div className="flex items-center gap-2">
           <Jumpman size={14} className="text-varsity" />
-          <span className="text-bone/80">Court Live</span>
+          <span className="text-jordan-black/80">Court Live</span>
         </div>
         <HypeIndicator count={court.activePlayers} label="playing now" />
       </div>
@@ -80,10 +80,10 @@ export default function CourtLivePage() {
 
         {/* Center title overlay */}
         <div className="absolute top-[42%] left-1/2 -translate-x-1/2 text-center pointer-events-none">
-          <div className="display-tight text-bone text-[32px] leading-[0.85]">
+          <div className="display-tight text-jordan-black text-[32px] leading-[0.85]">
             COURT 3
           </div>
-          <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-bone/70">
+          <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-jordan-black/70">
             {court.name}
           </div>
           <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
@@ -101,8 +101,8 @@ export default function CourtLivePage() {
                 key={nick}
                 className={`pill absolute inline-flex items-center gap-1 rounded-xs border ${
                   isChallenger
-                    ? "border-varsity text-bone bg-jordan-black"
-                    : "border-bone/40 text-bone/80 bg-jordan-black/80"
+                    ? "border-varsity text-jordan-black bg-white"
+                    : "border-jordan-black/40 text-jordan-black/80 bg-white/80"
                 } px-2 py-1 font-mono text-[9px] tracking-hud uppercase`}
                 style={{
                   top: p.top,
@@ -121,7 +121,7 @@ export default function CourtLivePage() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 hairline-t bg-jordan-black/80 backdrop-blur-sm">
+      <div className="absolute bottom-0 left-0 right-0 p-4 hairline-t bg-white/80 backdrop-blur-sm">
         <div className="mb-3 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
           <span className="text-sweat">CHALLENGER</span>
           <span className="text-varsity">TWO-STEP · NEIGHBORHOOD #12</span>
@@ -129,7 +129,7 @@ export default function CourtLivePage() {
         <Link
           ref={ctaRef}
           href="/matchup/two-step"
-          className="block w-full text-center py-4 rounded-xs bg-varsity font-mono text-[13px] tracking-hud uppercase text-bone font-bold"
+          className="block w-full text-center py-4 rounded-xs bg-varsity font-mono text-[13px] tracking-hud uppercase text-white font-bold"
         >
           Accept The Run
         </Link>

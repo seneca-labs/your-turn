@@ -43,14 +43,15 @@ export default function MatchupPage() {
   if (!opp) return notFound();
 
   // Intimidation scales visual weight on opponent side.
+  // White theme: low/medium stay light, high flips to dark for max contrast (the only dark surface on the page).
   const oppWeight = {
-    low: { size: "text-[56px]", side: "bg-jordan-black", accent: "text-bone" },
-    medium: { size: "text-[68px]", side: "bg-court-concrete", accent: "text-bone" },
-    high: { size: "text-[80px]", side: "bg-[#1a0507]", accent: "text-varsity" },
+    low: { size: "text-[56px]", side: "bg-white", accent: "text-jordan-black" },
+    medium: { size: "text-[68px]", side: "bg-[#F5F2EB]", accent: "text-jordan-black" },
+    high: { size: "text-[84px]", side: "bg-jordan-black", accent: "text-white" },
   }[opp.intimidation];
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="relative h-full flex flex-col">
         {/* Header */}
@@ -58,7 +59,7 @@ export default function MatchupPage() {
           <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
             Tale of the Tape
           </div>
-          <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-bone/70">
+          <div className="mt-1 font-mono text-[10px] tracking-hud uppercase text-jordan-black/70">
             {opp.homeCourt === user.homeCourt ? "HOME COURT · WEST 4TH" : "AWAY · " + opp.homeCourt.toUpperCase()}
           </div>
         </div>
@@ -71,12 +72,12 @@ export default function MatchupPage() {
               <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-2">
                 CHALLENGER
               </div>
-              <h2 className="display-tight text-bone text-[44px] leading-[0.85]">
+              <h2 className="display-tight text-jordan-black text-[44px] leading-[0.85]">
                 {user.nickname.split(" ").map((w, i) => (
                   <div key={i}>{w}</div>
                 ))}
               </h2>
-              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-bone/60">
+              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/60">
                 {user.homeCourt}
               </div>
             </div>
@@ -99,7 +100,7 @@ export default function MatchupPage() {
                   <div key={i}>{w}</div>
                 ))}
               </h2>
-              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-bone/60 text-right">
+              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/60 text-right">
                 {opp.homeCourt}
               </div>
             </div>
@@ -149,7 +150,7 @@ export default function MatchupPage() {
         <div className="hairline-t p-4 space-y-3">
           <Link
             href="/game/live"
-            className="block w-full text-center py-3 rounded-xs bg-varsity font-mono text-[12px] tracking-hud uppercase text-bone font-bold"
+            className="block w-full text-center py-3 rounded-xs bg-varsity font-mono text-[12px] tracking-hud uppercase text-white font-bold"
           >
             Accept the Run
           </Link>
@@ -160,7 +161,7 @@ export default function MatchupPage() {
                 <Link
                   key={o.id}
                   href={`/matchup/${o.id}`}
-                  className={`h-1.5 w-6 rounded-full ${o.id === opp.id ? "bg-varsity" : "bg-bone/20"}`}
+                  className={`h-1.5 w-6 rounded-full ${o.id === opp.id ? "bg-varsity" : "bg-jordan-black/20"}`}
                   aria-label={o.nickname}
                 />
               ))}
@@ -189,7 +190,7 @@ function StatLine({
         {label}
       </span>
       <span
-        className={`display-tight tabular text-[24px] ${accent ? "text-win-gold" : "text-bone"}`}
+        className={`display-tight tabular text-[24px] ${accent ? "text-win-gold" : "text-jordan-black"}`}
       >
         {value}
       </span>

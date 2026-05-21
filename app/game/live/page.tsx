@@ -53,7 +53,7 @@ export default function GameLive() {
   }, []);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg" />
       <div
@@ -69,13 +69,13 @@ export default function GameLive() {
       </div>
 
       {/* Top score bar */}
-      <div className="relative pt-3 px-4 hairline-b pb-3 bg-jordan-black/60 backdrop-blur-sm">
+      <div className="relative pt-3 px-4 hairline-b pb-3 bg-white/60 backdrop-blur-sm">
         <div className="flex items-center justify-between font-mono text-[9px] tracking-label uppercase text-sweat mb-2">
           <div className="flex items-center gap-2">
             <Jumpman size={12} className="text-varsity" />
             <span>Live · Court 3</span>
           </div>
-          <span className="tabular text-bone">{clock}</span>
+          <span className="tabular text-jordan-black">{clock}</span>
         </div>
         <div className="flex items-stretch justify-between">
           <ScoreSide name="SWEET SHADOW" value={home} sideRef={homeRef} isHome />
@@ -84,7 +84,7 @@ export default function GameLive() {
           </div>
           <ScoreSide name="TWO-STEP" value={away} sideRef={awayRef} />
         </div>
-        <div className="mt-2 flex items-center justify-between font-mono text-[8px] tracking-hud uppercase text-bone/60">
+        <div className="mt-2 flex items-center justify-between font-mono text-[8px] tracking-hud uppercase text-jordan-black/60">
           <span className="text-varsity">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-varsity mr-1 align-middle" />
             POSSESSION
@@ -95,23 +95,23 @@ export default function GameLive() {
 
       {/* Subtle player overlays on court */}
       <div className="absolute top-[40%] left-[28%] z-10">
-        <span className="px-2 py-1 rounded-xs bg-jordan-black/80 border border-varsity font-mono text-[8px] tracking-hud uppercase text-bone">
+        <span className="px-2 py-1 rounded-xs bg-white/80 border border-varsity font-mono text-[8px] tracking-hud uppercase text-jordan-black">
           SWEET SHADOW
         </span>
       </div>
       <div className="absolute top-[50%] right-[24%] z-10">
-        <span className="px-2 py-1 rounded-xs bg-jordan-black/80 border border-bone/40 font-mono text-[8px] tracking-hud uppercase text-bone/80">
+        <span className="px-2 py-1 rounded-xs bg-white/80 border border-jordan-black/40 font-mono text-[8px] tracking-hud uppercase text-jordan-black/80">
           TWO-STEP
         </span>
       </div>
 
       {/* Bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 hairline-t bg-jordan-black/80 backdrop-blur-sm px-4 py-3">
+      <div className="absolute bottom-0 left-0 right-0 hairline-t bg-white/80 backdrop-blur-sm px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <button className="call-moment flex-1 py-3 rounded-xs border border-varsity text-varsity font-mono text-[11px] tracking-hud uppercase hover:bg-varsity hover:text-bone transition-colors">
+          <button className="call-moment flex-1 py-3 rounded-xs border border-varsity text-varsity font-mono text-[11px] tracking-hud uppercase hover:bg-varsity hover:text-white transition-colors">
             Call Moment
           </button>
-          <button className="px-4 py-3 rounded-xs border border-bone/30 text-bone/70 font-mono text-[11px] tracking-hud uppercase hover:border-bone hover:text-bone">
+          <button className="px-4 py-3 rounded-xs border border-jordan-black/30 text-jordan-black/70 font-mono text-[11px] tracking-hud uppercase hover:border-jordan-black hover:text-jordan-black">
             Dispute
           </button>
         </div>
@@ -133,13 +133,13 @@ function ScoreSide({
 }) {
   return (
     <div className={`flex-1 ${isHome ? "text-left" : "text-right"}`}>
-      <div className="font-mono text-[9px] tracking-hud uppercase text-bone/70 truncate">
+      <div className="font-mono text-[9px] tracking-hud uppercase text-jordan-black/70 truncate">
         {name}
       </div>
       <span
         ref={sideRef}
         className={`display-tight text-[56px] leading-none tabular block ${
-          isHome ? "text-bone" : "text-bone"
+          isHome ? "text-jordan-black" : "text-jordan-black"
         }`}
       >
         {value}

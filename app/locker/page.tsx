@@ -21,13 +21,13 @@ export default function LockerPage() {
   }, []);
 
   return (
-    <PhoneFrame bg="#0A0A0A">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="relative h-full overflow-y-auto no-scrollbar">
         <div className="pt-3 px-4 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
           <div className="flex items-center gap-2">
             <Jumpman size={14} className="text-varsity" />
-            <span className="text-bone/80">Locker</span>
+            <span className="text-jordan-black/80">Locker</span>
           </div>
           <span className="text-sweat tabular">2 / 9 EARNED</span>
         </div>
@@ -36,7 +36,7 @@ export default function LockerPage() {
           <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
             Sweet Shadow&apos;s drops
           </div>
-          <h1 className="display-tight text-bone text-[34px] leading-[0.9] mt-1">
+          <h1 className="display-tight text-jordan-black text-[34px] leading-[0.9] mt-1">
             EARNED ON COURT
           </h1>
         </div>
@@ -74,12 +74,12 @@ export default function LockerPage() {
                         width="14"
                         height="10"
                         rx="1"
-                        stroke="#F5F2EB"
+                        stroke="#0A0A0A"
                         strokeWidth="1.5"
                       />
                       <path
                         d="M8 11 V7 A4 4 0 0 1 16 7 V11"
-                        stroke="#F5F2EB"
+                        stroke="#0A0A0A"
                         strokeWidth="1.5"
                         fill="none"
                       />
@@ -89,7 +89,7 @@ export default function LockerPage() {
               </div>
               <div
                 className={`display-tight text-[13px] leading-tight mb-1 ${
-                  d.status === "unlocked" ? "text-win-gold" : "text-bone/80"
+                  d.status === "unlocked" ? "text-win-gold" : "text-jordan-black/80"
                 }`}
               >
                 {d.name}

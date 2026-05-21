@@ -50,13 +50,13 @@ export default function TournamentPage() {
   }, []);
 
   return (
-    <PhoneFrame bg="#0A0A0A">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="relative h-full overflow-y-auto no-scrollbar">
         <div className="pt-3 px-4 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
           <div className="flex items-center gap-2">
             <Jumpman size={14} className="text-varsity" />
-            <span className="text-bone/80">Bracket</span>
+            <span className="text-jordan-black/80">Bracket</span>
           </div>
           <span className="text-sweat">SPRING · 2026</span>
         </div>
@@ -65,7 +65,7 @@ export default function TournamentPage() {
           <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
             Path to The One
           </div>
-          <h1 className="display-tight text-bone text-[34px] leading-[0.9] mt-1">
+          <h1 className="display-tight text-jordan-black text-[34px] leading-[0.9] mt-1">
             COURT TO CITY
           </h1>
         </div>
@@ -80,7 +80,7 @@ export default function TournamentPage() {
                       ? "text-win-gold"
                       : i === 1
                       ? "text-varsity"
-                      : "text-bone/50"
+                      : "text-jordan-black/50"
                   }`}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -106,8 +106,8 @@ export default function TournamentPage() {
               {i < ROUNDS.length - 1 && (
                 <div className="flex justify-center my-2">
                   <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
-                    <line x1="6" y1="0" x2="6" y2="20" stroke="rgba(245,242,235,0.20)" strokeWidth="1" />
-                    <path d="M2 14 L6 20 L10 14" stroke="rgba(245,242,235,0.40)" strokeWidth="1" fill="none" />
+                    <line x1="6" y1="0" x2="6" y2="20" stroke="rgba(10,10,10,0.20)" strokeWidth="1" />
+                    <path d="M2 14 L6 20 L10 14" stroke="rgba(10,10,10,0.40)" strokeWidth="1" fill="none" />
                   </svg>
                 </div>
               )}
@@ -143,8 +143,8 @@ function MatchRow({
             name === "TBD"
               ? "text-sweat"
               : self
-              ? "text-bone"
-              : "text-bone/85"
+              ? "text-jordan-black"
+              : "text-jordan-black/85"
           }`}
         >
           {name}

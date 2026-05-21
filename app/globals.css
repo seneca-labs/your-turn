@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0A0A0A;
-  --bg-alt: #1A1A1A;
-  --card: #2D2D2D;
-  --text: #F5F2EB;
-  --text-dim: #E8E6E1;
+  --bg: #FFFFFF;
+  --bg-alt: #F5F2EB;
+  --card: #E8E6E1;
+  --text: #0A0A0A;
+  --text-dim: #2D2D2D;
   --text-muted: #6B6B6B;
   --varsity: #CE1126;
   --hype: #FF2D2D;
-  --gold: #D4A938;
-  --line: rgba(245, 242, 235, 0.10);
+  --gold: #B8902A; /* darker gold for legibility on white */
+  --line: rgba(10, 10, 10, 0.10);
 }
 
 html,
@@ -110,14 +110,14 @@ body {
   display: inline-block;
 }
 
-/* Spotlight cursor — inverts whatever it hovers */
+/* Spotlight cursor — inverts whatever it hovers (works on any bg via difference blend) */
 .yt-spot {
   position: fixed;
   z-index: 9999;
   pointer-events: none;
   width: 20px;
   height: 20px;
-  background: #f5f2eb;
+  background: #ffffff;
   border-radius: 50%;
   mix-blend-mode: difference;
   transform: translate(-50%, -50%);
@@ -134,7 +134,7 @@ body {
   pointer-events: none;
   width: 40px;
   height: 40px;
-  border: 1.5px solid #f5f2eb;
+  border: 1.5px solid #ffffff;
   border-radius: 50%;
   mix-blend-mode: difference;
   transform: translate(-50%, -50%);
@@ -151,13 +151,13 @@ body {
 .halftone {
   background-image: radial-gradient(
     circle,
-    rgba(245, 242, 235, 0.08) 1px,
+    rgba(10, 10, 10, 0.10) 1px,
     transparent 1.5px
   );
   background-size: 8px 8px;
 }
 
-/* Grain overlay — film texture for depth */
+/* Grain overlay — film texture for depth (subtle on white) */
 .grain {
   position: relative;
 }
@@ -166,17 +166,17 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.04;
-  mix-blend-mode: overlay;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Scanlines — broadcast HUD reference */
+/* Scanlines — broadcast/print reference (dark lines on light) */
 .scanlines {
   background-image: repeating-linear-gradient(
     0deg,
-    rgba(245, 242, 235, 0.025) 0px,
-    rgba(245, 242, 235, 0.025) 1px,
+    rgba(10, 10, 10, 0.04) 0px,
+    rgba(10, 10, 10, 0.04) 1px,
     transparent 1px,
     transparent 3px
   );

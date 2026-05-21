@@ -33,13 +33,13 @@ export default function OnboardFlow() {
   }, [step]);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg" />
       <div className="relative h-full flex flex-col px-5 pt-12 pb-8">
         {/* Step counter */}
         <div className="flex items-center justify-between font-mono text-[10px] tracking-label uppercase">
-          <div className="flex items-center gap-2 text-bone/70">
+          <div className="flex items-center gap-2 text-jordan-black/70">
             <Jumpman size={14} className="text-varsity" />
             Onboard
           </div>
@@ -48,7 +48,7 @@ export default function OnboardFlow() {
               <span
                 key={i}
                 className={`h-1 w-6 rounded-full ${
-                  i <= step ? "bg-varsity" : "bg-bone/20"
+                  i <= step ? "bg-varsity" : "bg-jordan-black/20"
                 }`}
               />
             ))}
@@ -61,7 +61,7 @@ export default function OnboardFlow() {
               <div className="font-mono text-[10px] tracking-label uppercase text-sweat">
                 Question 01
               </div>
-              <h1 className="display-tight text-bone text-[44px] leading-[0.85] mt-2">
+              <h1 className="display-tight text-jordan-black text-[44px] leading-[0.85] mt-2">
                 WHAT&apos;S YOUR MOVE?
               </h1>
               <div className="mt-8 grid grid-cols-2 gap-2">
@@ -74,8 +74,8 @@ export default function OnboardFlow() {
                     }}
                     className={`py-4 rounded-xs border font-mono text-[11px] tracking-hud uppercase transition-colors ${
                       move === m
-                        ? "border-varsity bg-varsity/10 text-bone"
-                        : "border-bone/20 text-bone/80 hover:border-bone"
+                        ? "border-varsity bg-varsity/10 text-jordan-black"
+                        : "border-jordan-black/20 text-jordan-black/80 hover:border-jordan-black"
                     }`}
                   >
                     {m}
@@ -90,7 +90,7 @@ export default function OnboardFlow() {
               <div className="font-mono text-[10px] tracking-label uppercase text-sweat">
                 Question 02
               </div>
-              <h1 className="display-tight text-bone text-[44px] leading-[0.85] mt-2">
+              <h1 className="display-tight text-jordan-black text-[44px] leading-[0.85] mt-2">
                 WHERE DO YOU HOOP?
               </h1>
               <div className="mt-8 grid grid-cols-2 gap-2">
@@ -103,8 +103,8 @@ export default function OnboardFlow() {
                     }}
                     className={`py-4 rounded-xs border font-mono text-[11px] tracking-hud uppercase transition-colors ${
                       court === c
-                        ? "border-varsity bg-varsity/10 text-bone"
-                        : "border-bone/20 text-bone/80 hover:border-bone"
+                        ? "border-varsity bg-varsity/10 text-jordan-black"
+                        : "border-jordan-black/20 text-jordan-black/80 hover:border-jordan-black"
                     }`}
                   >
                     {c}
@@ -121,15 +121,15 @@ export default function OnboardFlow() {
               </div>
               <h1
                 ref={revealRef}
-                className="display-tight text-bone text-[54px] leading-[0.9] whitespace-pre-line"
+                className="display-tight text-jordan-black text-[54px] leading-[0.9] whitespace-pre-line"
               />
-              <div className="mt-6 font-mono text-[10px] tracking-hud uppercase text-bone/70">
+              <div className="mt-6 font-mono text-[10px] tracking-hud uppercase text-jordan-black/70">
                 {move} · {court}
               </div>
               <Jumpman size={56} className="text-varsity mt-8" />
               <button
                 onClick={() => setStep(0)}
-                className="mt-10 px-6 py-3 rounded-xs bg-varsity font-mono text-[11px] tracking-hud uppercase text-bone font-bold"
+                className="mt-10 px-6 py-3 rounded-xs bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold"
               >
                 Hit the Court
               </button>

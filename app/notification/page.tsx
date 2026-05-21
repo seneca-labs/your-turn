@@ -12,7 +12,7 @@ export default function NotificationScreen() {
   }, []);
 
   return (
-    <PhoneFrame bg="#000">
+    <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       {/* Wallpaper — asphalt with subtle vignette */}
       <div className="absolute inset-0 asphalt-bg" />
@@ -26,25 +26,25 @@ export default function NotificationScreen() {
 
       <div className="relative h-full flex flex-col items-center pt-20">
         {/* Time */}
-        <div className="display-tight text-bone text-[88px] leading-none tabular">
+        <div className="display-tight text-jordan-black text-[88px] leading-none tabular">
           8:42
         </div>
-        <div className="mt-2 font-mono text-[12px] tracking-hud uppercase text-bone/80">
+        <div className="mt-2 font-mono text-[12px] tracking-hud uppercase text-jordan-black/80">
           Saturday, May 21
         </div>
 
         {/* Notification card */}
         <div
           ref={cardRef}
-          className="mt-12 w-[342px] rounded-xs hairline bg-[rgba(20,20,20,0.85)] backdrop-blur-md p-4"
+          className="mt-12 w-[342px] rounded-xs hairline bg-[rgba(10,10,10,0.95)] backdrop-blur-md p-4"
           style={{ borderColor: "rgba(206,17,38,0.45)" }}
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-xs bg-varsity flex items-center justify-center">
-                <Jumpman size={18} className="text-bone" />
+                <Jumpman size={18} className="text-jordan-black" />
               </div>
-              <span className="font-mono text-[11px] tracking-hud uppercase text-bone">
+              <span className="font-mono text-[11px] tracking-hud uppercase text-jordan-black">
                 Your Turn
               </span>
             </div>
@@ -53,17 +53,17 @@ export default function NotificationScreen() {
             </span>
           </div>
 
-          <div className="display-tight text-bone text-[22px] leading-tight mb-2">
+          <div className="display-tight text-jordan-black text-[22px] leading-tight mb-2">
             TWO-STEP CALLED YOU OUT
           </div>
 
-          <div className="font-mono text-[11px] tracking-hud uppercase text-pg-slate mb-3">
+          <div className="font-mono text-[11px] tracking-hud uppercase text-sweat mb-3">
             Court 3 · West 4th · Today
           </div>
 
           <Link
             href="/court/west-4th"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-hud uppercase text-varsity hover:text-bone transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-hud uppercase text-varsity hover:text-jordan-black transition-colors"
           >
             Tap to accept
             <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="animate-nudge-right">
@@ -73,10 +73,10 @@ export default function NotificationScreen() {
         </div>
 
         <div className="absolute bottom-12 left-0 right-0 text-center">
-          <div className="font-mono text-[10px] tracking-label uppercase text-bone/40">
+          <div className="font-mono text-[10px] tracking-label uppercase text-jordan-black/40">
             Swipe up to open
           </div>
-          <div className="mt-3 mx-auto h-1 w-32 rounded-full bg-bone/60" />
+          <div className="mt-3 mx-auto h-1 w-32 rounded-full bg-jordan-black/60" />
         </div>
       </div>
     </PhoneFrame>

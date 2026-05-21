@@ -18,7 +18,7 @@ export function StatCard({
       </span>
       <span
         className={`display-tight text-2xl ${
-          accent ? "text-win-gold" : "text-bone"
+          accent ? "text-win-gold" : "text-jordan-black"
         }`}
       >
         {value}

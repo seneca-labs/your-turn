@@ -8,7 +8,7 @@ export function PhoneFrame({
   bg?: string;
 }) {
   return (
-    <div className="min-h-dvh w-full flex items-center justify-center bg-[#050505]">
+    <div className="min-h-dvh w-full flex items-center justify-center bg-[#EAE7E0]">
       <div className="phone" style={{ background: bg }}>
         {children}
       </div>
@@ -17,7 +17,7 @@ export function PhoneFrame({
 }
 
 export function StatusBar({ tone = "light" }: { tone?: "light" | "dark" }) {
-  const color = tone === "light" ? "text-bone" : "text-jordan-black";
+  const color = tone === "light" ? "text-jordan-black" : "text-jordan-black";
   return (
     <div
       className={`flex items-center justify-between px-6 pt-2 pb-1 font-mono text-[13px] tabular ${color} relative z-10`}

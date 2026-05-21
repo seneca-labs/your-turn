@@ -98,7 +98,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <h1 className="hero-line display-tight text-bone text-[68px] leading-[0.82]">
+            <h1 className="hero-line display-tight text-jordan-black text-[68px] leading-[0.82]">
               {user.nickname.split(" ").map((w, i) => (
                 <div key={i}>{w}</div>
               ))}
@@ -106,7 +106,7 @@ export default function ProfilePage() {
 
             <div className="hero-line mt-4 flex items-center gap-2">
               <Wing size={26} className="text-varsity" />
-              <span className="font-mono text-[11px] tracking-hud uppercase text-bone/85">
+              <span className="font-mono text-[11px] tracking-hud uppercase text-jordan-black/85">
                 {user.homeCourt} · {user.neighborhood}
               </span>
             </div>
@@ -164,7 +164,7 @@ export default function ProfilePage() {
                   1
                 </span>
               </div>
-              <div className="font-mono text-[8px] tracking-hud uppercase text-bone/60">
+              <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/60">
                 14 day reign
               </div>
               <Jumpman
@@ -215,7 +215,7 @@ export default function ProfilePage() {
               variant="gold"
             />
           </div>
-          <Jumpman size={36} className="text-bone/15" />
+          <Jumpman size={36} className="text-jordan-black/15" />
         </div>
 
         {/* Highlights */}
@@ -239,10 +239,10 @@ export default function ProfilePage() {
                 />
                 <div className="absolute inset-0 flex items-end p-2">
                   <div className="space-y-1 relative">
-                    <div className="font-mono text-[8px] tracking-hud uppercase text-bone/60">
+                    <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/60">
                       {h.timestamp}
                     </div>
-                    <div className="display-tight text-bone text-[11px] leading-tight">
+                    <div className="display-tight text-jordan-black text-[11px] leading-tight">
                       {h.caption}
                     </div>
                     <div className="flex items-center gap-1 text-hype">
@@ -278,14 +278,14 @@ function RankRow({
     <div className="flex items-center justify-between hairline rounded-xs px-3 py-2">
       <span
         className={`font-mono text-[9px] tracking-hud uppercase ${
-          muted ? "text-sweat" : "text-bone/70"
+          muted ? "text-sweat" : "text-jordan-black/70"
         }`}
       >
         {label}
       </span>
       <span
         className={`display-tight tabular ${
-          muted ? "text-bone/40 text-[18px]" : "text-bone text-[22px]"
+          muted ? "text-jordan-black/40 text-[18px]" : "text-jordan-black text-[22px]"
         }`}
       >
         #

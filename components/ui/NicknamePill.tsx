@@ -18,13 +18,13 @@ export function NicknamePill({
       ? "border-win-gold"
       : variant === "gold"
       ? "border-win-gold"
-      : "border-bone/40";
+      : "border-jordan-black/40";
   const text =
     variant === "gold"
       ? "text-win-gold"
       : variant === "challenger"
-      ? "text-bone"
-      : "text-bone";
+      ? "text-jordan-black"
+      : "text-jordan-black";
 
   const sizes = {
     sm: "px-2 py-1 text-[10px] tracking-hud",
@@ -34,7 +34,7 @@ export function NicknamePill({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-xs border bg-jordan-black ${border} ${text} font-mono uppercase ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-xs border bg-white ${border} ${text} font-mono uppercase ${sizes[size]} ${className}`}
     >
       {name}
     </span>
