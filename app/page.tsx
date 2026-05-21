@@ -1,101 +1,271 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import anime from "animejs";
+import { Wing, Jumpman } from "@/components/icons";
+import { Clock, SpotlightCursor } from "@/components/ui";
 
-export default function Home() {
+interface ScreenLink {
+  href: string;
+  title: string;
+  tier: 1 | 2;
+  num: number;
+  note?: string;
+}
+
+const SCREENS: ScreenLink[] = [
+  { href: "/notification", title: "Lock screen notification", tier: 1, num: 1 },
+  { href: "/court/west-4th", title: "Court live view", tier: 1, num: 2 },
+  { href: "/player/sweet-shadow", title: "Profile / Sweet Shadow", tier: 1, num: 3 },
+  { href: "/matchup/two-step", title: "Matchup / Two-Step", tier: 1, num: 4, note: "Low intimidation" },
+  { href: "/matchup/the-landlord", title: "Matchup / The Landlord", tier: 1, num: 4, note: "Medium intimidation" },
+  { href: "/matchup/black-jesus", title: "Matchup / Black Jesus", tier: 1, num: 4, note: "Boro king" },
+  { href: "/game/live", title: "In-game UI", tier: 1, num: 5 },
+  { href: "/jury", title: "Crowd jury vote", tier: 1, num: 6 },
+  { href: "/capture", title: "Highlight capture", tier: 1, num: 7 },
+  { href: "/feed", title: "Highlight feed + stats", tier: 1, num: 8 },
+  { href: "/leaderboard", title: "Leaderboard", tier: 1, num: 10, note: "List + map view" },
+  { href: "/drop/unlocked", title: "Drop unlocked", tier: 1, num: 11 },
+  { href: "/notification/the-one", title: "The One invite", tier: 1, num: 12 },
+  { href: "/onboard", title: "Nickname creation", tier: 2, num: 13 },
+  { href: "/court-detail/west-4th", title: "Court detail", tier: 2, num: 14 },
+  { href: "/team/landlords", title: "Team page", tier: 2, num: 15 },
+  { href: "/tournament", title: "Tournament bracket", tier: 2, num: 16 },
+  { href: "/locker", title: "Drops locker", tier: 2, num: 17 },
+];
+
+export default function Landing() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const watermarkRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (heroRef.current) {
+      anime({
+        targets: heroRef.current.querySelectorAll(".hero-stagger"),
+        opacity: [0, 1],
+        translateY: [40, 0],
+        duration: 900,
+        delay: anime.stagger(140),
+        easing: "easeOutExpo",
+      });
+    }
+    if (watermarkRef.current) {
+      anime({
+        targets: watermarkRef.current,
+        opacity: [0, 1],
+        scale: [1.15, 1],
+        duration: 1600,
+        delay: 200,
+        easing: "easeOutExpo",
+      });
+    }
+    if (listRef.current) {
+      anime({
+        targets: listRef.current.querySelectorAll(".screen-row"),
+        opacity: [0, 1],
+        translateX: [-12, 0],
+        duration: 400,
+        delay: anime.stagger(28, { start: 900 }),
+        easing: "easeOutExpo",
+      });
+    }
+  }, []);
+
+  const tier1 = SCREENS.filter((s) => s.tier === 1);
+  const tier2 = SCREENS.filter((s) => s.tier === 2);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="relative min-h-dvh overflow-hidden grain">
+      <SpotlightCursor />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Massive Jumpman watermark, rotated, behind hero */}
+      <div
+        ref={watermarkRef}
+        className="absolute pointer-events-none select-none"
+        style={{
+          right: "-8%",
+          top: "-4%",
+          transform: "rotate(8deg)",
+          opacity: 0,
+        }}
+      >
+        <Jumpman size={720} className="text-varsity opacity-[0.07]" />
+      </div>
+
+      {/* Diagonal varsity stripe — grid-breaking accent */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: 0,
+          left: "-10%",
+          width: "120%",
+          height: "120%",
+          background:
+            "linear-gradient(118deg, transparent 0%, transparent 62%, rgba(206,17,38,0.06) 62.3%, rgba(206,17,38,0.06) 63%, transparent 63.3%, transparent 100%)",
+        }}
+      />
+
+      {/* Halftone vignette in bottom-right corner */}
+      <div
+        className="absolute pointer-events-none halftone"
+        style={{
+          bottom: 0,
+          right: 0,
+          width: "60%",
+          height: "60%",
+          maskImage:
+            "radial-gradient(ellipse at bottom right, black 0%, transparent 70%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at bottom right, black 0%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative px-6 py-10 max-w-3xl mx-auto z-10">
+        {/* Top HUD */}
+        <header className="flex items-center justify-between mb-16 font-mono text-[10px] tracking-hud uppercase">
+          <div className="flex items-center gap-2">
+            <Jumpman size={18} className="text-varsity" />
+            <span className="text-bone/80">Your Turn / Jordan</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sweat hidden sm:inline">NYC · 8:42</span>
+            <Clock className="text-bone/60 text-[10px]" />
+          </div>
+        </header>
+
+        {/* Hero */}
+        <div ref={heroRef} className="mb-16">
+          <div className="hero-stagger font-mono text-[10px] tracking-label uppercase text-win-gold mb-4 flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-win-gold" />
+            BD Concept · Capabilities Prototype
+          </div>
+
+          <h1 className="display-tight text-bone text-[96px] sm:text-[128px] leading-[0.82] mb-2">
+            <div className="hero-stagger">YOUR</div>
+            <div className="hero-stagger relative inline-block">
+              <span className="text-varsity">TURN</span>
+              <span
+                className="absolute -right-3 top-1 text-win-gold display-tight text-[18px]"
+                style={{ transform: "rotate(12deg)" }}
+              >
+                ★
+              </span>
+            </div>
+          </h1>
+
+          <div className="hero-stagger mt-4 max-w-md">
+            <div className="font-mono text-[13px] tracking-hud uppercase text-bone/85 leading-relaxed">
+              Streetball identity, scored.
+              <br />
+              Court-to-city ladder. Crowd-judged.
+              <br />
+              <span className="text-win-gold">Drops earned, never bought.</span>
+            </div>
+          </div>
+
+          <div className="hero-stagger mt-3 font-mono text-[10px] tracking-label uppercase text-sweat">
+            17 surfaces · Mobile 390 × 844 · No backend, no API, no auth
+          </div>
+
+          <div className="hero-stagger mt-8 flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/demo"
+              className="group inline-flex items-center justify-between gap-4 px-5 py-3 rounded-xs bg-varsity font-mono text-[11px] tracking-hud uppercase text-bone font-bold"
+            >
+              <span>Run Demo Cycle</span>
+              <Jumpman size={18} className="text-bone group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/notification"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xs border border-bone/30 font-mono text-[11px] tracking-hud uppercase text-bone hover:border-bone"
+            >
+              <span>Enter Scene 1</span>
+              <svg width="12" height="9" viewBox="0 0 14 10" fill="none">
+                <path d="M1 5 H12 M9 1 L13 5 L9 9" stroke="currentColor" strokeWidth="1.4" />
+              </svg>
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Screen list */}
+        <div ref={listRef} className="space-y-10">
+          <ScreenGroup title="Tier 1 / In Video" count={tier1.length} screens={tier1} />
+          <ScreenGroup title="Tier 2 / Deck" count={tier2.length} screens={tier2} />
+        </div>
+
+        {/* Coordinates footer — atmospheric detail */}
+        <footer className="mt-20 grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-[9px] tracking-label uppercase text-sweat hairline-t pt-4">
+          <div>Lat 40.7311 · Lng -74.0019</div>
+          <div className="text-right">Court 3 / W4 / NYC</div>
+          <div>Fan concept · Not affiliated</div>
+          <div className="text-right text-win-gold/70">v0.1 · 2026.05.21</div>
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+function ScreenGroup({
+  title,
+  count,
+  screens,
+}: {
+  title: string;
+  count: number;
+  screens: ScreenLink[];
+}) {
+  return (
+    <section>
+      <div className="flex items-center justify-between hairline-b pb-2 mb-4">
+        <div className="font-mono text-[9px] tracking-label uppercase text-win-gold flex items-center gap-2">
+          <Wing size={14} className="text-win-gold" />
+          {title}
+        </div>
+        <div className="font-mono text-[9px] tracking-label uppercase text-sweat tabular">
+          {String(count).padStart(2, "0")} / SURFACES
+        </div>
+      </div>
+      <div className="grid gap-1">
+        {screens.map((s) => (
+          <Link
+            key={s.href}
+            href={s.href}
+            className="screen-row group flex items-center gap-4 px-3 py-3 hairline rounded-xs hover:border-varsity hover:bg-varsity/5 transition-colors relative overflow-hidden"
+          >
+            {/* Hover-reveal Jumpman watermark in row */}
+            <span
+              className="absolute -right-4 -top-2 text-varsity opacity-0 group-hover:opacity-20 transition-opacity pointer-events-none"
+              style={{ transform: "rotate(-12deg)" }}
+            >
+              <Jumpman size={64} />
+            </span>
+
+            <span className="display-tight text-bone/40 text-[26px] tabular w-10 text-center group-hover:text-varsity transition-colors">
+              {String(s.num).padStart(2, "0")}
+            </span>
+            <div className="flex-1 min-w-0 relative">
+              <div className="font-mono text-[12px] tracking-hud uppercase text-bone">
+                {s.title}
+              </div>
+              {s.note && (
+                <div className="font-mono text-[9px] tracking-hud uppercase text-sweat">
+                  {s.note}
+                </div>
+              )}
+            </div>
+            <svg
+              width="14"
+              height="10"
+              viewBox="0 0 14 10"
+              fill="none"
+              className="text-bone/40 group-hover:text-varsity group-hover:animate-nudge-right relative"
+            >
+              <path d="M1 5 H12 M9 1 L13 5 L9 9" stroke="currentColor" strokeWidth="1.4" />
+            </svg>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

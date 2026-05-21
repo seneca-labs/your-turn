@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Your Turn / Jordan
 
-## Getting Started
+Mobile-first capabilities prototype. 17 surfaces. Streetball identity, scored.
 
-First, run the development server:
+Fan/concept project. Not affiliated with Nike, Inc. or Jordan Brand.
+
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. Built and verified at 390 × 844 (iPhone 14 Pro).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The landing index links to every screen. `/demo` auto-cycles all 17 surfaces with a 4s pause each.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+- Next.js 14 (app router) + TypeScript
+- Tailwind CSS
+- anime.js for motion
+- IBM Plex Mono + Anton (Google Fonts via `next/font`)
+- Custom SVG icons (Jumpman silhouette as the brand mark, geometric Wing as secondary accent)
+- No backend, no API, no auth — all data lives in `lib/mockData.ts`
 
-To learn more about Next.js, take a look at the following resources:
+## Surfaces
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Tier 1 (in video)**
+`/notification` · `/court/west-4th` · `/player/sweet-shadow` · `/matchup/[two-step|the-landlord|black-jesus]` · `/game/live` · `/jury` · `/capture` · `/feed` · `/leaderboard` · `/drop/unlocked` · `/notification/the-one`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Tier 2 (deck)**
+`/onboard` · `/court-detail/west-4th` · `/team/landlords` · `/tournament` · `/locker`
 
-## Deploy on Vercel
+## Design system
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Palette:** Jordan Black `#0A0A0A`, Bone `#F5F2EB`, Varsity Red `#CE1126`, Hype Red `#FF2D2D`, Win Gold `#D4A938`, Sweat slate, asphalt + concrete surfaces
+- **Type:** IBM Plex Mono (HUD/labels/body) + Anton (display, condensed, uppercase, `-0.02em`/`0.9` line-height)
+- **Surface rules:** 2px corner radius (`rounded-xs`), 1px hairlines at 10% bone, asphalt/concrete CSS noise textures, halftone vignettes, grain overlay, scanlines on ceremony surfaces
+- **Motion:** anime.js with `easeOutExpo` enters, staggered reveals, scramble-text moments, number flips on stat updates
+- **Cursor:** spotlight invert (`mix-blend-mode: difference`) on desktop
