@@ -272,6 +272,7 @@ export const highlights: Highlight[] = [
     cold: 89,
     fire: 412,
     timestamp: "2H AGO",
+    video: "/highlights/dunk.mp4",
   },
   {
     id: "h2",

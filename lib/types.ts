@@ -107,6 +107,7 @@ export interface Highlight {
   cold: number;
   fire: number;
   timestamp: string;
+  video?: string; // /highlights/*.mp4 — autoplays muted on the feed
 }
 
 export interface LeaderboardRow {

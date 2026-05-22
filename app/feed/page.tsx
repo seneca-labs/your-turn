@@ -60,29 +60,57 @@ export default function FeedPage() {
             className="relative h-full w-full snap-start flex items-end p-4"
           >
             {/* Video / thumbnail visualization */}
-            <div className="absolute inset-0 concrete-bg">
+            <div className="absolute inset-0 concrete-bg overflow-hidden">
+              {h.video ? (
+                <video
+                  src={h.video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(135deg, rgba(206,17,38,${0.10 + i * 0.05}), rgba(0,0,0,0.5)), repeating-linear-gradient(45deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 6px)`,
+                  }}
+                />
+              )}
+              {/* Bottom legibility scrim — slightly heavier when video is present */}
               <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(135deg, rgba(206,17,38,${0.10 + i * 0.05}), rgba(0,0,0,0.5)), repeating-linear-gradient(45deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 6px)`,
-                }}
+                className={`absolute inset-0 ${
+                  h.video
+                    ? "bg-gradient-to-t from-jordan-black/80 via-jordan-black/15 to-jordan-black/35"
+                    : "bg-gradient-to-t from-white via-white/60 to-transparent"
+                }`}
               />
-              {/* Ken-burns motion vignette */}
-              <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent" />
-              {/* "playing" indicator */}
-              <div className="absolute top-12 left-4 flex items-center gap-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/70">
+              <div
+                className={`absolute top-12 left-4 flex items-center gap-2 font-mono text-[9px] tracking-hud uppercase ${
+                  h.video ? "text-white/85" : "text-jordan-black/70"
+                }`}
+              >
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-hype animate-live-pulse" />
                 Playing · 00:0{i + 4}
               </div>
             </div>
 
-            {/* Bottom left meta */}
+            {/* Bottom left meta — flips to white over video, dark over the textured placeholder */}
             <div className="relative z-10 max-w-[68%] space-y-2">
               <NicknamePill name={h.player} size="sm" variant={h.player.includes("SHADOW") ? "self" : "default"} />
-              <div className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/80">
+              <div
+                className={`font-mono text-[10px] tracking-hud uppercase ${
+                  h.video ? "text-white/90" : "text-jordan-black/80"
+                }`}
+              >
                 {h.court.toUpperCase().replace("-", " ")} · {h.timestamp}
               </div>
-              <h2 className="display-tight text-jordan-black text-[36px] leading-[0.9]">
+              <h2
+                className={`display-tight text-[36px] leading-[0.9] ${
+                  h.video ? "text-white" : "text-jordan-black"
+                }`}
+              >
                 {h.caption}
               </h2>
             </div>
