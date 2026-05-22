@@ -144,12 +144,12 @@ export const opponents: Opponent[] = [
     photo: "/players/the-jet.png",
     halfFace: "/half-faces/the-jet.png",
     matchVsSelf: {
-      finalScoreSelf: 11,
-      finalScoreOpp: 9,
-      // 11 pts from 6 FG: 1 one + 5 twos = 11 ✓
-      selfStats: { pts: 11, fg: "6/11", twoPt: 5, ankles: 3 },
-      // 9 pts from 5 FG: 1 one + 4 twos = 9 ✓
-      oppStats: { pts: 9, fg: "5/9", twoPt: 4, ankles: 2 },
+      finalScoreSelf: 10,
+      finalScoreOpp: 8,
+      // 10 pts from 7 FG: 4 ones + 3 twos = 10 ✓ (capped <11 since first-to-11)
+      selfStats: { pts: 10, fg: "7/12", twoPt: 3, ankles: 3 },
+      // 8 pts from 5 FG: 2 ones + 3 twos = 8 ✓
+      oppStats: { pts: 8, fg: "5/10", twoPt: 3, ankles: 2 },
       shotChartSelf: shotsTheJetSelf,
       shotChartOpp: shotsTheJetOpp,
     },
@@ -172,12 +172,12 @@ export const opponents: Opponent[] = [
     photo: "/players/iceman.png",
     halfFace: "/half-faces/iceman.png",
     matchVsSelf: {
-      finalScoreSelf: 13,
-      finalScoreOpp: 11,
-      // 13 pts from 7 FG: 1 one + 6 twos = 13 ✓
-      selfStats: { pts: 13, fg: "7/12", twoPt: 6, ankles: 4 },
-      // 11 pts from 6 FG: 1 one + 5 twos = 11 ✓
-      oppStats: { pts: 11, fg: "6/11", twoPt: 5, ankles: 3 },
+      finalScoreSelf: 10,
+      finalScoreOpp: 9,
+      // 10 pts from 7 FG: 4 ones + 3 twos = 10 ✓ (capped <11 since first-to-11)
+      selfStats: { pts: 10, fg: "7/13", twoPt: 3, ankles: 4 },
+      // 9 pts from 5 FG: 1 one + 4 twos = 9 ✓
+      oppStats: { pts: 9, fg: "5/11", twoPt: 4, ankles: 3 },
       shotChartSelf: shotsIcemanSelf,
       shotChartOpp: shotsIcemanOpp,
     },

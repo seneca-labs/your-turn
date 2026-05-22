@@ -14,7 +14,6 @@ import { staggerIn, countUp, scaleIn } from "@/lib/animations";
 import { user, highlights, findPerson } from "@/lib/mockData";
 import { Wing, Flame, Jumpman } from "@/components/icons";
 
-// Normalize either user or opponent into a single shape the unified UI consumes.
 type Person = {
   id: string;
   nickname: string;
@@ -99,7 +98,6 @@ export default function ProfilePage() {
   if (!person) return notFound();
 
   const isSelf = person.id === user.id;
-  // Highlights for opponents fall back to a generic synthetic card if none exist
   const personHighlights = highlights.filter((h) => h.player === person.nickname);
   const displayedHighlights =
     personHighlights.length > 0
@@ -237,7 +235,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Signature stats */}
         {person.signatureStats && (
           <Section title="Signature">
             <div ref={statsRef} className="grid grid-cols-3 gap-2">
@@ -258,7 +255,6 @@ export default function ProfilePage() {
           </Section>
         )}
 
-        {/* Ranked — same layout for everyone */}
         <Section title="Ranked">
           <div className="flex gap-2 items-stretch">
             <div className="relative w-[148px] flex-shrink-0 concrete-bg hairline rounded-md p-3 flex flex-col justify-between overflow-hidden">
@@ -312,7 +308,6 @@ export default function ProfilePage() {
           </div>
         </Section>
 
-        {/* Team — every player rides for someone */}
         <Section title="Rides for">
           <div className="flex items-center justify-between hairline rounded-md px-3 py-3 bg-white">
             <div className="flex items-center gap-2.5">
