@@ -143,10 +143,10 @@ export default function CourtLivePage() {
 
       {/* Body — photo left (full body), stats right */}
       <div className="relative px-4 mt-1 grid grid-cols-[1.4fr_1fr] gap-3 flex-1 min-h-0 pb-2">
-        {/* Photo column */}
+        {/* Photo column — clean, no overlays */}
         <div
           ref={photoRef}
-          className="relative rounded-md overflow-hidden bg-[#F5F2EB] h-full"
+          className="relative h-full"
           style={{ opacity: 0 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -155,25 +155,6 @@ export default function CourtLivePage() {
             alt={challenger.nickname}
             className="absolute inset-0 h-full w-full object-contain"
           />
-          {/* Top-left challenger tag */}
-          <div className="absolute top-2 left-2 z-10">
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-varsity text-white font-mono text-[8px] tracking-hud uppercase font-bold shadow-[0_4px_10px_rgba(206,17,38,0.4)]">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-white animate-live-pulse" />
-              Challenger
-            </span>
-          </div>
-          {/* Nickname pill bottom-left */}
-          <div
-            className="absolute bottom-2 left-2 right-2 z-10 px-2 py-1.5 rounded-md"
-            style={{ background: "rgba(10,10,10,0.78)", backdropFilter: "blur(6px)" }}
-          >
-            <h2 className="display-tight text-white text-[16px] leading-none">
-              {challenger.nickname}
-            </h2>
-            <div className="mt-0.5 font-mono text-[8px] tracking-hud uppercase text-white/70">
-              {challenger.homeCourt}
-            </div>
-          </div>
         </div>
 
         {/* Stats column */}
