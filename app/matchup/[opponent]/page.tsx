@@ -9,13 +9,14 @@ import {
   IOSStatusBar,
   IOSHomeIndicator,
 } from "@/components/ui";
-import { user, opponents, findOpponent } from "@/lib/mockData";
+import { user, findOpponent } from "@/lib/mockData";
 import type { ShotMark } from "@/lib/types";
 
 export default function MatchupPage() {
   const params = useParams<{ opponent: string }>();
   const opp = findOpponent(params.opponent);
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -23,11 +24,9 @@ export default function MatchupPage() {
   const scoreSelfRef = useRef<HTMLSpanElement>(null);
   const scoreOppRef = useRef<HTMLSpanElement>(null);
   const courtRef = useRef<SVGSVGElement>(null);
-  const statRefs = useRef<HTMLSpanElement[]>([]);
 
   useEffect(() => {
     if (!opp) return;
-    statRefs.current = [];
 
     anime({
       targets: headerRef.current,
@@ -78,18 +77,21 @@ export default function MatchupPage() {
       });
     }
 
-    // PTS stats track the score in lockstep. All other stats stagger later.
-    statRefs.current.forEach((el, i) => {
-      if (!el) return;
-      const target = el.dataset.value || "0";
-      const fmt = el.dataset.fmt || "num";
-      const isPts = el.dataset.stat === "PTS";
-      if (isPts) {
-        animateStat(el, target, fmt, SCORE_DURATION, SCORE_DELAY);
-      } else {
-        animateStat(el, target, fmt, 800, 1200 + i * 60);
-      }
-    });
+    // Query stats from the rendered DOM — avoids ref-array race conditions
+    // (refs populated during render vs. cleared in effect created a stale empty array).
+    if (containerRef.current) {
+      const statEls = containerRef.current.querySelectorAll<HTMLElement>("[data-stat]");
+      statEls.forEach((el, i) => {
+        const target = el.dataset.value || "0";
+        const fmt = el.dataset.fmt || "num";
+        const isPts = el.dataset.stat === "PTS";
+        if (isPts) {
+          animateStat(el, target, fmt, SCORE_DURATION, SCORE_DELAY);
+        } else {
+          animateStat(el, target, fmt, 800, 1200 + i * 60);
+        }
+      });
+    }
   }, [opp]);
 
   if (!opp) return notFound();
@@ -101,7 +103,7 @@ export default function MatchupPage() {
       <ScreenBack />
       <IOSStatusBar tone="light" />
 
-      <div className="relative h-full flex flex-col pt-[44px]">
+      <div ref={containerRef} className="relative h-full flex flex-col pt-[44px]">
         {/* Compact header — no intimidation tag */}
         <div
           ref={headerRef}
@@ -271,7 +273,7 @@ export default function MatchupPage() {
           </div>
           <div className="grid grid-cols-2 gap-2">
             <StatBox
-              label={user.nickname.split(" ")[0]}
+              label={user.nickname}
               accent="win-gold"
               stats={[
                 ["PTS", m.selfStats.pts, "num"],
@@ -279,10 +281,9 @@ export default function MatchupPage() {
                 ["2PT", m.selfStats.twoPt, "num"],
                 ["ANKL", m.selfStats.ankles, "num"],
               ]}
-              statRefs={statRefs}
             />
             <StatBox
-              label={opp.nickname.split(" ")[0]}
+              label={opp.nickname}
               accent="varsity"
               stats={[
                 ["PTS", m.oppStats.pts, "num"],
@@ -290,7 +291,6 @@ export default function MatchupPage() {
                 ["2PT", m.oppStats.twoPt, "num"],
                 ["ANKL", m.oppStats.ankles, "num"],
               ]}
-              statRefs={statRefs}
             />
           </div>
         </div>
@@ -310,24 +310,6 @@ export default function MatchupPage() {
             </span>
           </Link>
 
-          <div className="mt-2.5 flex items-center justify-between">
-            <span className="font-mono text-[9px] tracking-label uppercase text-sweat">
-              Rotate · {opponents.findIndex((o) => o.id === opp.id) + 1} of{" "}
-              {opponents.length}
-            </span>
-            <div className="flex gap-1.5">
-              {opponents.map((o) => (
-                <Link
-                  key={o.id}
-                  href={`/matchup/${o.id}`}
-                  aria-label={o.nickname}
-                  className={`h-1.5 rounded-full transition-all ${
-                    o.id === opp.id ? "w-7 bg-varsity" : "w-5 bg-jordan-black/20"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -419,20 +401,18 @@ function StatBox({
   label,
   accent,
   stats,
-  statRefs,
 }: {
   label: string;
   accent: "varsity" | "win-gold";
   stats: Array<[string, string | number, "num" | "str"]>;
-  statRefs: React.MutableRefObject<HTMLSpanElement[]>;
 }) {
   const color = accent === "varsity" ? "text-varsity" : "text-win-gold";
   const dot = accent === "varsity" ? "bg-varsity" : "bg-win-gold";
   return (
     <div className="hairline rounded-md bg-white p-2.5">
       <div className="flex items-center gap-1.5 mb-2">
-        <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
-        <span className={`font-mono text-[9px] tracking-hud uppercase font-bold ${color}`}>
+        <span className={`inline-block h-2 w-2 rounded-full ${dot} flex-shrink-0`} />
+        <span className={`font-mono text-[9px] tracking-hud uppercase font-bold truncate ${color}`}>
           {label}
         </span>
       </div>
@@ -443,9 +423,6 @@ function StatBox({
               {k}
             </div>
             <span
-              ref={(el) => {
-                if (el) statRefs.current.push(el);
-              }}
               data-value={String(v)}
               data-fmt={fmt}
               data-stat={k}
