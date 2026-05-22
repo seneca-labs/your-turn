@@ -141,50 +141,43 @@ export default function CourtLivePage() {
         </div>
       </div>
 
-      {/* Body — photo left, stats right */}
-      <div className="relative px-4 mt-1 grid grid-cols-[1.4fr_1fr] gap-3 h-[440px]">
+      {/* Body — photo left (full body), stats right */}
+      <div className="relative px-4 mt-1 grid grid-cols-[1.4fr_1fr] gap-3 flex-1 min-h-0 pb-2">
         {/* Photo column */}
         <div
           ref={photoRef}
-          className="relative rounded-md overflow-hidden bg-[#F5F2EB]"
+          className="relative rounded-md overflow-hidden bg-[#F5F2EB] h-full"
           style={{ opacity: 0 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={challenger.photo}
             alt={challenger.nickname}
-            className="absolute inset-0 h-full w-full object-cover object-top"
-          />
-          {/* Atmospheric bottom gradient so the nickname pill sits cleanly */}
-          <div
-            className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%)",
-            }}
+            className="absolute inset-0 h-full w-full object-contain"
           />
           {/* Top-left challenger tag */}
-          <div className="absolute top-2 left-2">
+          <div className="absolute top-2 left-2 z-10">
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-varsity text-white font-mono text-[8px] tracking-hud uppercase font-bold shadow-[0_4px_10px_rgba(206,17,38,0.4)]">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-white animate-live-pulse" />
               Challenger
             </span>
           </div>
-          {/* Bottom nickname overlay */}
-          <div className="absolute bottom-2 left-2 right-2 z-10">
-            <h2 className="display-tight text-white text-[28px] leading-[0.9]">
-              {challenger.nickname.split(" ").map((word, i) => (
-                <div key={i}>{word}</div>
-              ))}
+          {/* Nickname pill bottom-left */}
+          <div
+            className="absolute bottom-2 left-2 right-2 z-10 px-2 py-1.5 rounded-md"
+            style={{ background: "rgba(10,10,10,0.78)", backdropFilter: "blur(6px)" }}
+          >
+            <h2 className="display-tight text-white text-[16px] leading-none">
+              {challenger.nickname}
             </h2>
-            <div className="mt-1 font-mono text-[9px] tracking-hud uppercase text-white/80">
+            <div className="mt-0.5 font-mono text-[8px] tracking-hud uppercase text-white/70">
               {challenger.homeCourt}
             </div>
           </div>
         </div>
 
         {/* Stats column */}
-        <div ref={statsRef} className="flex flex-col gap-2">
+        <div ref={statsRef} className="flex flex-col gap-1.5 min-h-0">
           <StatRow label="Record" value={`${challenger.record.wins}-${challenger.record.losses}`} />
           <StatRow
             label="Streak"
@@ -209,38 +202,21 @@ export default function CourtLivePage() {
               />
             </>
           )}
-          <div className="stat-row hairline rounded-md p-2.5 bg-white mt-auto">
+          <div className="stat-row hairline rounded-md p-2 bg-white">
             <div className="font-mono text-[8px] tracking-label uppercase text-sweat">
               Reps for
             </div>
-            <div className="display-tight text-jordan-black text-[14px] leading-none mt-1">
+            <div className="display-tight text-jordan-black text-[13px] leading-none mt-1">
               {challenger.team.name}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Callout */}
-      <div
-        ref={calloutRef}
-        className="relative px-5 mt-4"
-        style={{ opacity: 0 }}
-      >
-        <div className="hairline rounded-md bg-white p-3 text-center">
-          <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-1">
-            Incoming Challenge
-          </div>
-          <div className="font-mono text-[13px] tracking-tight text-jordan-black leading-snug">
-            <span className="font-bold">{challenger.nickname.replace("-", " ")}</span> challenged
-            you. Will you answer the call?
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom action sheet */}
+      {/* Bottom action sheet — challenge text + CTA together */}
       <div
         ref={sheetRef}
-        className="absolute bottom-0 left-0 right-0 z-30 px-4 pt-2 pb-7"
+        className="relative z-30 px-4 pt-3 pb-7"
         style={{
           background: "rgba(255,255,255,0.95)",
           backdropFilter: "blur(20px)",
@@ -255,6 +231,14 @@ export default function CourtLivePage() {
       >
         <div className="flex justify-center mb-2">
           <div className="h-[5px] w-9 rounded-full bg-jordan-black/20" />
+        </div>
+
+        <div ref={calloutRef} className="text-center mb-3" style={{ opacity: 0 }}>
+          <div className="font-mono text-[15px] tracking-tight text-jordan-black leading-snug">
+            <span className="font-bold">TWO STEP</span> challenged you.
+            <br />
+            Will you answer the call?
+          </div>
         </div>
 
         <Link
