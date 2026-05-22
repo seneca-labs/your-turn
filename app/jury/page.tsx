@@ -136,7 +136,7 @@ export default function JuryPage() {
                 locked ? "text-jordan-black/50" : "text-jordan-black"
               }`}
             />
-            {/* Hand-drawn scribble cross-out — draws across the question when locked */}
+            {/* Straight cross-out — draws across the question when locked */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
               viewBox="0 0 400 70"
@@ -145,7 +145,7 @@ export default function JuryPage() {
             >
               <path
                 ref={scribbleRef}
-                d="M 8 42 Q 60 28, 110 38 T 210 32 T 310 40 T 392 30"
+                d="M 8 35 L 392 35"
                 stroke="#CE1126"
                 strokeWidth="6"
                 strokeLinecap="round"
@@ -155,15 +155,14 @@ export default function JuryPage() {
             </svg>
           </div>
 
-          {locked && (
-            <div
-              ref={bigAnswerRef}
-              className="display-tight text-varsity tabular text-[120px] leading-[0.85] mt-2"
-              style={{ opacity: 0 }}
-            >
-              NO
-            </div>
-          )}
+          {/* Big NO — always mounted so the ref exists when lockIn() animates it */}
+          <div
+            ref={bigAnswerRef}
+            className="display-tight text-varsity tabular text-[120px] leading-[0.85] mt-2"
+            style={{ opacity: 0 }}
+          >
+            NO
+          </div>
         </div>
 
         {/* YES / NO buttons */}
