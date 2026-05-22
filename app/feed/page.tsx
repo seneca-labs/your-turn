@@ -11,12 +11,46 @@ export default function FeedPage() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const recordRef = useRef<HTMLSpanElement>(null);
   const rankRef = useRef<HTMLSpanElement>(null);
+  const feedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => {
       setShowStats(true);
     }, 1800);
     return () => clearTimeout(t);
+  }, []);
+
+  // Up/down arrows scroll the snap feed prev/next card.
+  // Captured here at the page level so PhoneFrame's global left/right
+  // demo nav stays intact and isn't shadowed.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      ) {
+        return;
+      }
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      const container = feedRef.current;
+      if (!container) return;
+      e.preventDefault();
+      const cardHeight = container.clientHeight;
+      const currentIndex = Math.round(container.scrollTop / cardHeight);
+      const nextIndex = Math.max(
+        0,
+        Math.min(
+          highlights.length - 1,
+          currentIndex + (e.key === "ArrowDown" ? 1 : -1),
+        ),
+      );
+      container.scrollTo({ top: nextIndex * cardHeight, behavior: "smooth" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
@@ -53,7 +87,7 @@ export default function FeedPage() {
       </div>
 
       {/* Feed list (snap) */}
-      <div className="h-full overflow-y-auto snap-feed no-scrollbar">
+      <div ref={feedRef} className="h-full overflow-y-auto snap-feed no-scrollbar">
         {highlights.map((h, i) => (
           <article
             key={h.id}
