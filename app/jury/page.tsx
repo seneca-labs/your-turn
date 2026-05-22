@@ -11,6 +11,8 @@ export default function JuryPage() {
   const tickerRef = useRef<HTMLSpanElement>(null);
   const screenFlashRef = useRef<HTMLDivElement>(null);
   const barGlowRef = useRef<HTMLDivElement>(null);
+  const scribbleRef = useRef<SVGPathElement>(null);
+  const bigAnswerRef = useRef<HTMLDivElement>(null);
   const [locked, setLocked] = useState(false);
   const [voters, setVoters] = useState(0);
   const [yourVote, setYourVote] = useState<"yes" | "no" | null>(null);
@@ -50,6 +52,30 @@ export default function JuryPage() {
         opacity: [0, 1, 0.35],
         duration: 700,
         easing: "easeOutExpo",
+      });
+    }
+    // Cross out "WAS IT A FOUL?" with a hand-drawn scribble, then drop the big NO.
+    if (scribbleRef.current) {
+      const len = scribbleRef.current.getTotalLength();
+      scribbleRef.current.style.strokeDasharray = `${len}`;
+      scribbleRef.current.style.strokeDashoffset = `${len}`;
+      anime({
+        targets: scribbleRef.current,
+        strokeDashoffset: [len, 0],
+        duration: 600,
+        easing: "easeInOutQuad",
+        delay: 100,
+      });
+    }
+    if (bigAnswerRef.current) {
+      anime({
+        targets: bigAnswerRef.current,
+        scale: [0.3, 1.15, 1],
+        opacity: [0, 1],
+        rotate: [-8, -3],
+        duration: 800,
+        delay: 650,
+        easing: "easeOutBack",
       });
     }
   }
@@ -101,12 +127,43 @@ export default function JuryPage() {
           Sweet Shadow vs Two-Step · 7-4
         </div>
 
-        {/* Question */}
-        <div className="flex-1 flex items-center justify-center">
-          <h1
-            ref={questionRef}
-            className="display-tight text-jordan-black text-[58px] leading-[0.9] text-center"
-          />
+        {/* Question + verdict */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+          <div className="relative inline-block">
+            <h1
+              ref={questionRef}
+              className={`display-tight text-[58px] leading-[0.9] text-center transition-colors duration-500 ${
+                locked ? "text-jordan-black/50" : "text-jordan-black"
+              }`}
+            />
+            {/* Hand-drawn scribble cross-out — draws across the question when locked */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 400 70"
+              preserveAspectRatio="none"
+              aria-hidden
+            >
+              <path
+                ref={scribbleRef}
+                d="M 8 42 Q 60 28, 110 38 T 210 32 T 310 40 T 392 30"
+                stroke="#CE1126"
+                strokeWidth="6"
+                strokeLinecap="round"
+                fill="none"
+                style={{ opacity: locked ? 1 : 0 }}
+              />
+            </svg>
+          </div>
+
+          {locked && (
+            <div
+              ref={bigAnswerRef}
+              className="display-tight text-varsity tabular text-[120px] leading-[0.85] mt-2"
+              style={{ opacity: 0 }}
+            >
+              NO
+            </div>
+          )}
         </div>
 
         {/* YES / NO buttons */}
@@ -192,7 +249,7 @@ export default function JuryPage() {
             )}
           </span>
           {locked ? (
-            <span className="text-win-gold font-bold">Result · No Foul</span>
+            <span className="text-win-gold font-bold">Locked · 73% No</span>
           ) : (
             <span className="text-jordan-black/60">Tallying</span>
           )}
