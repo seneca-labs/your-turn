@@ -159,8 +159,11 @@ export default function CourtLivePage() {
           />
         </div>
 
-        {/* Stats column */}
-        <div ref={statsRef} className="flex flex-col gap-1.5 min-h-0">
+        {/* Stats column — vertically centered */}
+        <div
+          ref={statsRef}
+          className="flex flex-col justify-center gap-1.5 min-h-0"
+        >
           <StatRow label="Record" value={`${challenger.record.wins}-${challenger.record.losses}`} />
           <StatRow
             label="Streak"
@@ -185,14 +188,6 @@ export default function CourtLivePage() {
               />
             </>
           )}
-          <div className="stat-row hairline rounded-md p-2 bg-white mt-auto">
-            <div className="font-mono text-[8px] tracking-label uppercase text-sweat">
-              Reps for
-            </div>
-            <div className="display-tight text-jordan-black text-[13px] leading-none mt-1">
-              {challenger.team.name}
-            </div>
-          </div>
         </div>
       </div>
 

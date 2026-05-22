@@ -74,8 +74,6 @@ export function PhoneFrame({
     [pathname, goPrev, goNext],
   );
 
-  const showZones = demoOrder.indexOf(pathname) >= 0;
-
   return (
     <div className="min-h-dvh w-full flex items-center justify-center bg-[#EAE7E0]">
       <div
@@ -84,46 +82,10 @@ export function PhoneFrame({
         onClick={handleClick}
       >
         {children}
-        {showZones && <EdgeHints />}
+        {/* No visual edge hints — left/right tap-zones + arrow keys still
+            navigate via handleClick and the keydown listener above. */}
       </div>
     </div>
-  );
-}
-
-function EdgeHints() {
-  return (
-    <>
-      <div
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-1/3 pointer-events-none z-[60] flex items-center justify-start pl-3 opacity-0 group-hover/phone:opacity-100 transition-opacity duration-300"
-      >
-        <div className="h-10 w-10 rounded-full bg-white/55 backdrop-blur-md flex items-center justify-center text-jordan-black/60 shadow-[0_4px_14px_rgba(10,10,10,0.10)]">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M9 2 L4 7 L9 12"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="square"
-            />
-          </svg>
-        </div>
-      </div>
-      <div
-        aria-hidden
-        className="absolute inset-y-0 right-0 w-1/3 pointer-events-none z-[60] flex items-center justify-end pr-3 opacity-0 group-hover/phone:opacity-100 transition-opacity duration-300"
-      >
-        <div className="h-10 w-10 rounded-full bg-white/55 backdrop-blur-md flex items-center justify-center text-jordan-black/60 shadow-[0_4px_14px_rgba(10,10,10,0.10)]">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M5 2 L10 7 L5 12"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="square"
-            />
-          </svg>
-        </div>
-      </div>
-    </>
   );
 }
 
