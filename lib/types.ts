@@ -25,8 +25,8 @@ export interface Team {
 export interface GameStats {
   pts: number;
   fg: string; // "5/9"
-  reb: number;
-  stl: number;
+  twoPt: number; // deep makes (behind arc, worth 2 in 1v1 pickup scoring)
+  ankles: number; // crossover breaks
 }
 
 export interface MatchGame {
@@ -71,6 +71,7 @@ export interface Opponent {
   nickname: string;
   record: WinLoss;
   homeCourt: string;
+  neighborhood: string;
   rank: Rank;
   intimidation: Intimidation;
   signatureStats?: {
@@ -78,6 +79,8 @@ export interface Opponent {
     crossover: string;
     closeOut: string;
   };
+  team: Team;
+  joined: string;
   photo: string;
   halfFace: string;
   matchVsSelf: MatchGame;

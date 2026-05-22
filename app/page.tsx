@@ -20,7 +20,7 @@ const SCREENS: ScreenLink[] = [
   { href: "/court/west-4th", title: "Accept challenge screen", tier: 1, num: 2, note: "Court live · matchup acceptance" },
   { href: "/player/sweet-shadow", title: "Main character profile", tier: 1, num: 3, note: "Sweet Shadow · stats + record" },
   {
-    href: "/player/the-jet",
+    href: "/player/two-step",
     title: "Opponent profile",
     tier: 1,
     num: 4,

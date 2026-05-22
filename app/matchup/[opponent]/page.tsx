@@ -10,16 +10,7 @@ import {
   IOSHomeIndicator,
 } from "@/components/ui";
 import { user, opponents, findOpponent } from "@/lib/mockData";
-import { Flame } from "@/components/icons";
 import type { ShotMark } from "@/lib/types";
-
-type Intim = "low" | "medium" | "high";
-
-const RANK_LABEL: Record<Intim, string> = {
-  low: "Opponent",
-  medium: "Veteran",
-  high: "Boro King",
-};
 
 export default function MatchupPage() {
   const params = useParams<{ opponent: string }>();
@@ -68,41 +59,33 @@ export default function MatchupPage() {
       easing: "easeOutBack",
     });
 
-    // Score tickers — animate up in SS favor.
     const finalSelf = opp.matchVsSelf.finalScoreSelf;
     const finalOpp = opp.matchVsSelf.finalScoreOpp;
-    if (scoreSelfRef.current) {
-      animateNumber(scoreSelfRef.current, finalSelf, 1800, 500);
-    }
-    if (scoreOppRef.current) {
-      animateNumber(scoreOppRef.current, finalOpp, 1800, 500);
-    }
+    if (scoreSelfRef.current) animateNumber(scoreSelfRef.current, finalSelf, 1800, 500);
+    if (scoreOppRef.current) animateNumber(scoreOppRef.current, finalOpp, 1800, 500);
 
-    // Shot chart — fade in dots progressively
     if (courtRef.current) {
       const dots = courtRef.current.querySelectorAll(".shot-dot");
       anime({
         targets: dots,
         opacity: [0, 1],
         scale: [0, 1],
-        delay: anime.stagger(50, { start: 1000 }),
+        delay: anime.stagger(50, { start: 900 }),
         duration: 320,
         easing: "easeOutBack",
       });
     }
 
-    // Stat line — number count-up
     statRefs.current.forEach((el, i) => {
       if (!el) return;
-      const target = parseFloat(el.dataset.value || "0");
+      const target = el.dataset.value || "0";
       const fmt = el.dataset.fmt || "num";
-      animateStat(el, target, fmt, 800, 1400 + i * 60);
+      animateStat(el, target, fmt, 800, 1200 + i * 60);
     });
   }, [opp]);
 
   if (!opp) return notFound();
 
-  const intim = opp.intimidation as Intim;
   const m = opp.matchVsSelf;
 
   return (
@@ -111,62 +94,31 @@ export default function MatchupPage() {
       <IOSStatusBar tone="light" />
 
       <div className="relative h-full flex flex-col pt-[44px]">
-        {/* Header */}
+        {/* Compact header — no intimidation tag */}
         <div
           ref={headerRef}
-          className="px-5 pt-2 pb-2.5 hairline-b flex items-center justify-between"
+          className="px-5 pt-2 pb-2 hairline-b"
         >
-          <div>
-            <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
-              Tale of the Tape
-            </div>
-            <div className="mt-0.5 font-mono text-[10px] tracking-hud uppercase text-jordan-black/75">
-              {opp.homeCourt === user.homeCourt
-                ? "Home Court · West 4th"
-                : `Away · ${opp.homeCourt}`}
-            </div>
+          <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
+            Tale of the Tape
           </div>
-          <span
-            className="inline-flex items-center gap-1 px-2 py-1 rounded-full font-mono text-[9px] tracking-hud uppercase font-bold"
-            style={{
-              background:
-                intim === "high"
-                  ? "linear-gradient(135deg, #CE1126 0%, #8A0A18 100%)"
-                  : intim === "medium"
-                  ? "rgba(206,17,38,0.12)"
-                  : "rgba(10,10,10,0.06)",
-              color:
-                intim === "high"
-                  ? "#FFFFFF"
-                  : intim === "medium"
-                  ? "#CE1126"
-                  : "#0A0A0A",
-              border:
-                intim === "high"
-                  ? "0.5px solid rgba(255,255,255,0.4)"
-                  : intim === "medium"
-                  ? "0.5px solid rgba(206,17,38,0.25)"
-                  : "0.5px solid rgba(10,10,10,0.10)",
-            }}
-          >
-            {intim === "high" && <Flame size={10} />}
-            {RANK_LABEL[intim]}
-          </span>
+          <div className="mt-0.5 font-mono text-[10px] tracking-hud uppercase text-jordan-black/75">
+            {opp.homeCourt === user.homeCourt
+              ? "Home Court · West 4th"
+              : `Away · ${opp.homeCourt}`}
+          </div>
         </div>
 
-        {/* VS / Face-off section — half-face backdrops + animated score */}
-        <div className="relative h-[260px] flex-shrink-0 overflow-hidden hairline-b">
-          {/* Left half — Sweet Shadow backdrop */}
-          <div
-            ref={leftRef}
-            className="absolute inset-y-0 left-0 w-1/2 overflow-hidden"
-          >
+        {/* VS / Face-off — large flex-grow area so faces fill */}
+        <div className="relative grid grid-cols-2 hairline-b overflow-hidden flex-1 min-h-[340px]">
+          {/* Left half — Sweet Shadow */}
+          <div ref={leftRef} className="relative overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={user.halfFace}
               alt=""
               className="absolute inset-0 h-full w-full object-cover object-right"
-              style={{ opacity: 0.28 }}
+              style={{ opacity: 0.32 }}
               aria-hidden
             />
             {/* Inner-edge fade so VS stays clean */}
@@ -174,23 +126,23 @@ export default function MatchupPage() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.85) 100%)",
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 65%, rgba(255,255,255,0.92) 100%)",
               }}
             />
-            {/* Outer-edge fade */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 35%)",
+                  "linear-gradient(90deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 30%)",
               }}
             />
-            {/* Nickname */}
+
+            {/* Label */}
             <div className="absolute top-3 left-3 z-10">
               <div className="font-mono text-[9px] tracking-label uppercase text-win-gold mb-0.5 font-bold">
                 Challenger
               </div>
-              <h2 className="display-tight text-jordan-black text-[26px] leading-[0.9]">
+              <h2 className="display-tight text-jordan-black text-[28px] leading-[0.9]">
                 {user.nickname.split(" ").map((word, i) => (
                   <div key={i}>{word}</div>
                 ))}
@@ -203,7 +155,7 @@ export default function MatchupPage() {
               </div>
               <span
                 ref={scoreSelfRef}
-                className="display-tight text-jordan-black text-[64px] leading-none tabular"
+                className="display-tight text-jordan-black text-[72px] leading-none tabular"
                 data-value={m.finalScoreSelf}
               >
                 0
@@ -211,56 +163,48 @@ export default function MatchupPage() {
             </div>
           </div>
 
-          {/* Right half — Opponent backdrop */}
-          <div
-            ref={rightRef}
-            className="absolute inset-y-0 right-0 w-1/2 overflow-hidden"
-          >
+          {/* Right half — Opponent */}
+          <div ref={rightRef} className="relative overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={opp.halfFace}
               alt=""
               className="absolute inset-0 h-full w-full object-cover object-left"
-              style={{ opacity: 0.28 }}
+              style={{ opacity: 0.32 }}
               aria-hidden
             />
-            {/* Inner-edge fade */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(270deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.85) 100%)",
+                  "linear-gradient(270deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 65%, rgba(255,255,255,0.92) 100%)",
               }}
             />
-            {/* Outer-edge fade + intimidation tint */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  intim === "high"
-                    ? "linear-gradient(270deg, rgba(206,17,38,0.10) 0%, rgba(255,255,255,0) 35%)"
-                    : "linear-gradient(270deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 35%)",
+                  "linear-gradient(270deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 30%)",
               }}
             />
-            {/* Nickname */}
+
             <div className="absolute top-3 right-3 z-10 text-right">
               <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-0.5 font-bold">
-                {RANK_LABEL[intim]}
+                Opponent
               </div>
-              <h2 className="display-tight text-jordan-black text-[26px] leading-[0.9]">
+              <h2 className="display-tight text-jordan-black text-[28px] leading-[0.9]">
                 {opp.nickname.split(" ").map((word, i) => (
                   <div key={i}>{word}</div>
                 ))}
               </h2>
             </div>
-            {/* Score */}
             <div className="absolute bottom-3 right-4 z-10 text-right">
               <div className="font-mono text-[8px] tracking-label uppercase text-sweat mb-0.5">
                 Score
               </div>
               <span
                 ref={scoreOppRef}
-                className="display-tight text-jordan-black text-[64px] leading-none tabular"
+                className="display-tight text-jordan-black text-[72px] leading-none tabular"
                 data-value={m.finalScoreOpp}
               >
                 0
@@ -268,19 +212,18 @@ export default function MatchupPage() {
             </div>
           </div>
 
-          {/* VS — centered, no squiggle */}
-          <div
-            ref={vsRef}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none flex flex-col items-center"
-          >
-            <div
-              className="display-tight text-varsity text-[64px] leading-none"
-              style={{ textShadow: "0 4px 24px rgba(206,17,38,0.45)" }}
-            >
-              VS
-            </div>
-            <div className="mt-1 font-mono text-[8px] tracking-label uppercase text-sweat">
-              First to 11
+          {/* VS — dead center on the full grid via inset-0 flex */}
+          <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+            <div ref={vsRef} className="flex flex-col items-center">
+              <div
+                className="display-tight text-varsity text-[80px] leading-none"
+                style={{ textShadow: "0 6px 28px rgba(206,17,38,0.45)" }}
+              >
+                VS
+              </div>
+              <div className="mt-1.5 font-mono text-[9px] tracking-label uppercase text-sweat">
+                First to 11
+              </div>
             </div>
           </div>
         </div>
@@ -312,8 +255,8 @@ export default function MatchupPage() {
           </div>
         </div>
 
-        {/* Game stats */}
-        <div className="px-4 pb-3 flex-1">
+        {/* Game stats — sized to content, no flex-1 (no awkward whitespace) */}
+        <div className="px-4 pb-3">
           <div className="font-mono text-[9px] tracking-label uppercase text-sweat flex items-center gap-2 mb-2">
             <span className="inline-block h-px w-3 bg-sweat" />
             Game · Live
@@ -325,8 +268,8 @@ export default function MatchupPage() {
               stats={[
                 ["PTS", m.selfStats.pts, "num"],
                 ["FG", m.selfStats.fg, "str"],
-                ["REB", m.selfStats.reb, "num"],
-                ["STL", m.selfStats.stl, "num"],
+                ["2PT", m.selfStats.twoPt, "num"],
+                ["ANKL", m.selfStats.ankles, "num"],
               ]}
               statRefs={statRefs}
             />
@@ -336,8 +279,8 @@ export default function MatchupPage() {
               stats={[
                 ["PTS", m.oppStats.pts, "num"],
                 ["FG", m.oppStats.fg, "str"],
-                ["REB", m.oppStats.reb, "num"],
-                ["STL", m.oppStats.stl, "num"],
+                ["2PT", m.oppStats.twoPt, "num"],
+                ["ANKL", m.oppStats.ankles, "num"],
               ]}
               statRefs={statRefs}
             />
@@ -394,7 +337,7 @@ const ShotChart = forwardRef<
       ref={ref}
       viewBox="0 0 200 140"
       preserveAspectRatio="xMidYMid meet"
-      className="w-full h-[150px]"
+      className="w-full h-[140px]"
       aria-hidden="true"
     >
       <rect
@@ -523,11 +466,9 @@ function animateNumber(el: HTMLElement, to: number, durationMs = 1200, delay = 0
   });
 }
 
-function animateStat(el: HTMLElement, to: number | string, fmt: string, durationMs = 800, delay = 0) {
+function animateStat(el: HTMLElement, to: string, fmt: string, durationMs = 800, delay = 0) {
   if (fmt === "str") {
-    // For "5/9" type, parse the made part and animate it counting up to final
-    const target = String(to);
-    const parts = target.split("/");
+    const parts = String(to).split("/");
     if (parts.length === 2) {
       const num = parseInt(parts[0], 10);
       const denom = parts[1];
@@ -545,9 +486,8 @@ function animateStat(el: HTMLElement, to: number | string, fmt: string, duration
       });
       return;
     }
-    el.textContent = target;
+    el.textContent = String(to);
     return;
   }
-  const numericTarget = typeof to === "number" ? to : parseFloat(String(to));
-  animateNumber(el, numericTarget, durationMs, delay);
+  animateNumber(el, parseFloat(to), durationMs, delay);
 }

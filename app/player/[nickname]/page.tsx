@@ -12,16 +12,40 @@ import {
 } from "@/components/ui";
 import { staggerIn, countUp, scaleIn } from "@/lib/animations";
 import { user, highlights, findPerson } from "@/lib/mockData";
-import type { Opponent } from "@/lib/types";
 import { Wing, Flame, Jumpman } from "@/components/icons";
 
-function isSelf(p: ReturnType<typeof findPerson>): p is typeof user {
-  return !!p && (p as typeof user).team !== undefined;
-}
+// Normalize either user or opponent into a single shape the unified UI consumes.
+type Person = {
+  id: string;
+  nickname: string;
+  photo: string;
+  homeCourt: string;
+  neighborhood: string;
+  joined: string;
+  record: { wins: number; losses: number; currentStreak: number };
+  signatureStats?: { fadeaway: string; crossover: string; closeOut: string };
+  rank: { court?: number; neighborhood?: number; city?: number; global?: number };
+  team: { name: string; roster: number };
+};
 
 export default function ProfilePage() {
   const params = useParams<{ nickname: string }>();
-  const person = findPerson(params.nickname);
+  const raw = findPerson(params.nickname);
+  const person: Person | null = raw
+    ? {
+        id: raw.id,
+        nickname: raw.nickname,
+        photo: raw.photo,
+        homeCourt: raw.homeCourt,
+        neighborhood: raw.neighborhood,
+        joined: raw.joined,
+        record: raw.record,
+        signatureStats: raw.signatureStats,
+        rank: raw.rank,
+        team: raw.team,
+      }
+    : null;
+
   const heroRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -58,10 +82,10 @@ export default function ProfilePage() {
       });
     }
     if (statsRef.current) staggerIn(statsRef.current.querySelectorAll(".stat"));
-    if (courtRankRef.current && isSelf(person)) {
+    if (courtRankRef.current) {
       courtRankRef.current.textContent = "0";
       setTimeout(() => {
-        if (courtRankRef.current) countUp(courtRankRef.current, person.rank.court || 0, 1200);
+        if (courtRankRef.current) countUp(courtRankRef.current, person.rank.court || 1, 1200);
       }, 600);
     }
     rankRefs.current.forEach((el, i) => {
@@ -74,10 +98,24 @@ export default function ProfilePage() {
 
   if (!person) return notFound();
 
-  const self = isSelf(person);
-  const opp = self ? null : (person as Opponent);
-  const handle = "@" + (self ? person.id : opp!.id);
-  const tone = self ? "win-gold" : "varsity";
+  const isSelf = person.id === user.id;
+  // Highlights for opponents fall back to a generic synthetic card if none exist
+  const personHighlights = highlights.filter((h) => h.player === person.nickname);
+  const displayedHighlights =
+    personHighlights.length > 0
+      ? personHighlights
+      : [
+          {
+            id: `${person.id}-h1`,
+            player: person.nickname,
+            court: person.homeCourt.toLowerCase().replace(/\s+/g, "-"),
+            caption: "GAME WINNER",
+            timestamp: "3D AGO",
+            fire: 612,
+            cold: 88,
+            hype: 410,
+          },
+        ];
 
   return (
     <PhoneFrame bg="#FFFFFF">
@@ -87,7 +125,7 @@ export default function ProfilePage() {
       <div className="relative h-full overflow-y-auto no-scrollbar grain pt-[44px]">
         <div className="relative flex items-center justify-between px-4 pt-2 pb-1.5 z-20">
           <span className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/50">
-            {handle}
+            @{person.id}
           </span>
           <button
             aria-label="More"
@@ -126,9 +164,8 @@ export default function ProfilePage() {
               <div
                 className="h-[104px] w-[104px] rounded-full overflow-hidden bg-[#F5F2EB]"
                 style={{
-                  boxShadow: self
-                    ? "0 0 0 4px rgba(184,144,42,0.16), 0 12px 28px rgba(184,144,42,0.22)"
-                    : "0 0 0 4px rgba(206,17,38,0.14), 0 12px 28px rgba(206,17,38,0.20)",
+                  boxShadow:
+                    "0 0 0 4px rgba(184,144,42,0.16), 0 12px 28px rgba(184,144,42,0.22)",
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -139,24 +176,10 @@ export default function ProfilePage() {
                 />
               </div>
               <span
-                className={`absolute -bottom-1 -right-1 inline-flex items-center justify-center h-6 w-6 rounded-full text-white shadow-[0_2px_8px_rgba(206,17,38,0.4)] ${
-                  self ? "bg-win-gold" : "bg-varsity"
-                }`}
+                className="absolute -bottom-1 -right-1 inline-flex items-center justify-center h-6 w-6 rounded-full bg-win-gold text-jordan-black shadow-[0_2px_8px_rgba(184,144,42,0.4)]"
                 aria-label="Verified hooper"
               >
-                {self ? (
-                  <Jumpman size={12} className="text-jordan-black" />
-                ) : (
-                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-                    <path
-                      d="M1 4.5 L4 7.5 L10 1.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
+                <Jumpman size={12} className="text-jordan-black" />
               </span>
             </div>
 
@@ -167,26 +190,13 @@ export default function ProfilePage() {
             <div className="hero-line mt-2 flex items-center gap-1.5 font-mono text-[11px] tracking-tight text-jordan-black/70">
               <Wing size={12} className="text-varsity" />
               <span>
-                {person.homeCourt}
-                {self && ` · ${person.neighborhood}`}
-                {!self && ` · NEIGH #${(person as Opponent).rank.neighborhood}`}
+                {person.homeCourt} · {person.neighborhood}
               </span>
             </div>
 
-            {self && (
-              <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
-                Hooper since {person.joined}
-              </div>
-            )}
-            {!self && (
-              <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
-                {opp!.intimidation === "high"
-                  ? "BORO KING · Approach With Caution"
-                  : opp!.intimidation === "medium"
-                  ? "Veteran · Don't Sleep"
-                  : "Local · Beatable"}
-              </div>
-            )}
+            <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
+              Hooper since {person.joined}
+            </div>
 
             <div className="hero-line mt-4 flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-jordan-black/15 font-mono text-[11px] tabular text-jordan-black">
@@ -215,35 +225,19 @@ export default function ProfilePage() {
           </div>
 
           <div className="hero-line relative mt-5 flex items-center gap-2">
-            {self ? (
-              <>
-                <Link
-                  href="/court/west-4th"
-                  className="flex-1 text-center py-2.5 rounded-md bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(206,17,38,0.28)] active:scale-[0.98] transition-transform"
-                >
-                  Challenge
-                </Link>
-                <button className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors">
-                  Share Profile
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href={`/matchup/${opp!.id}`}
-                  className="flex-1 text-center py-2.5 rounded-md bg-jordan-black font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(10,10,10,0.28)] active:scale-[0.98] transition-transform"
-                >
-                  Run It Back
-                </Link>
-                <button className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors">
-                  Scout Report
-                </button>
-              </>
-            )}
+            <Link
+              href={isSelf ? "/court/west-4th" : `/matchup/${person.id}`}
+              className="flex-1 text-center py-2.5 rounded-md bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(206,17,38,0.28)] active:scale-[0.98] transition-transform"
+            >
+              Challenge
+            </Link>
+            <button className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors">
+              Share Profile
+            </button>
           </div>
         </div>
 
-        {/* Signature stats — both profiles share this */}
+        {/* Signature stats */}
         {person.signatureStats && (
           <Section title="Signature">
             <div ref={statsRef} className="grid grid-cols-3 gap-2">
@@ -264,138 +258,87 @@ export default function ProfilePage() {
           </Section>
         )}
 
-        {/* Ranked — different shape for self vs opponent */}
-        {self && (
-          <Section title="Ranked">
-            <div className="flex gap-2 items-stretch">
-              <div className="relative w-[148px] flex-shrink-0 concrete-bg hairline rounded-md p-3 flex flex-col justify-between overflow-hidden">
-                <div className="font-mono text-[9px] tracking-label uppercase text-win-gold">
-                  Court
-                </div>
-                <div className="flex items-end gap-1 leading-none">
-                  <span className="display-tight text-win-gold text-[14px] mb-1">#</span>
-                  <span
-                    ref={courtRankRef}
-                    className="display-tight text-win-gold text-[88px] tabular leading-[0.8]"
-                    data-value={person.rank.court || 0}
-                  >
-                    1
-                  </span>
-                </div>
-                <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55">
-                  14 day reign
-                </div>
-                <Jumpman
-                  size={48}
-                  className="absolute -bottom-2 -right-2 text-win-gold opacity-20"
-                  style={{ transform: "rotate(-15deg)" }}
-                />
+        {/* Ranked — same layout for everyone */}
+        <Section title="Ranked">
+          <div className="flex gap-2 items-stretch">
+            <div className="relative w-[148px] flex-shrink-0 concrete-bg hairline rounded-md p-3 flex flex-col justify-between overflow-hidden">
+              <div className="font-mono text-[9px] tracking-label uppercase text-win-gold">
+                Court
               </div>
-
-              <div className="flex-1 flex flex-col justify-between gap-2">
-                <RankRow
-                  label="Neighborhood"
-                  value={person.rank.neighborhood || 0}
-                  refCb={(el) => {
-                    if (el) rankRefs.current[0] = el;
-                  }}
-                />
-                <RankRow
-                  label="City"
-                  value={person.rank.city || 0}
-                  refCb={(el) => {
-                    if (el) rankRefs.current[1] = el;
-                  }}
-                />
-                <RankRow
-                  label="Global"
-                  value={person.rank.global || 0}
-                  refCb={(el) => {
-                    if (el) rankRefs.current[2] = el;
-                  }}
-                  muted
-                />
+              <div className="flex items-end gap-1 leading-none">
+                <span className="display-tight text-win-gold text-[14px] mb-1">#</span>
+                <span
+                  ref={courtRankRef}
+                  className="display-tight text-win-gold text-[88px] tabular leading-[0.8]"
+                  data-value={person.rank.court || 1}
+                >
+                  1
+                </span>
               </div>
+              <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55">
+                {person.homeCourt}
+              </div>
+              <Jumpman
+                size={48}
+                className="absolute -bottom-2 -right-2 text-win-gold opacity-20"
+                style={{ transform: "rotate(-15deg)" }}
+              />
             </div>
-          </Section>
-        )}
 
-        {!self && opp && (
-          <Section title="Ranked">
-            <div className="grid grid-cols-2 gap-2">
-              <RankCard
+            <div className="flex-1 flex flex-col justify-between gap-2">
+              <RankRow
                 label="Neighborhood"
-                value={opp.rank.neighborhood || 0}
-                accent={tone}
+                value={person.rank.neighborhood || 0}
+                refCb={(el) => {
+                  if (el) rankRefs.current[0] = el;
+                }}
               />
-              {opp.rank.borough !== undefined && (
-                <RankCard label="Borough" value={opp.rank.borough} accent={tone} />
-              )}
-              <RankCard label="Home Court" value={opp.homeCourt} text accent="varsity" />
-              <RankCard
-                label="Streak"
-                value={`W${opp.record.currentStreak}`}
-                text
-                accent="win-gold"
+              <RankRow
+                label="City"
+                value={person.rank.city || 0}
+                refCb={(el) => {
+                  if (el) rankRefs.current[1] = el;
+                }}
+              />
+              <RankRow
+                label="Global"
+                value={person.rank.global || 0}
+                refCb={(el) => {
+                  if (el) rankRefs.current[2] = el;
+                }}
+                muted
               />
             </div>
-          </Section>
-        )}
+          </div>
+        </Section>
 
-        {/* Team (self only) */}
-        {self && (
-          <Section title="Rides for">
-            <div className="flex items-center justify-between hairline rounded-md px-3 py-3 bg-white">
-              <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-full bg-jordan-black flex items-center justify-center">
-                  <Jumpman size={16} className="text-white" />
+        {/* Team — every player rides for someone */}
+        <Section title="Rides for">
+          <div className="flex items-center justify-between hairline rounded-md px-3 py-3 bg-white">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-full bg-jordan-black flex items-center justify-center">
+                <Jumpman size={16} className="text-white" />
+              </div>
+              <div>
+                <div className="display-tight text-jordan-black text-[18px] leading-none">
+                  {person.team.name}
                 </div>
-                <div>
-                  <div className="display-tight text-jordan-black text-[18px] leading-none">
-                    {person.team.name}
-                  </div>
-                  <div className="mt-0.5 font-mono text-[9px] tracking-hud uppercase text-sweat">
-                    {person.team.roster} roster
-                  </div>
+                <div className="mt-0.5 font-mono text-[9px] tracking-hud uppercase text-sweat">
+                  {person.team.roster} roster
                 </div>
               </div>
-              <span className="font-mono text-[9px] tracking-hud uppercase text-win-gold font-bold">
-                View
-              </span>
             </div>
-          </Section>
-        )}
+            <span className="font-mono text-[9px] tracking-hud uppercase text-win-gold font-bold">
+              View
+            </span>
+          </div>
+        </Section>
 
-        {/* Highlights — self gets all, opponents get their own */}
         <Section title="Recent" pb="pb-10">
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4">
-            {highlights
-              .filter(
-                (h) =>
-                  h.player === person.nickname ||
-                  (self && h.player === person.nickname),
-              )
-              .concat(self ? [] : [])
-              .slice(0, 4)
-              .map((h) => (
-                <HighlightCard key={h.id} h={h} />
-              ))}
-            {/* If opponent has no highlights, show one synthetic placeholder */}
-            {!self &&
-              highlights.filter((h) => h.player === person.nickname).length === 0 && (
-                <HighlightCard
-                  h={{
-                    id: "ghost",
-                    player: person.nickname,
-                    court: opp!.homeCourt.toLowerCase().replace(/\s+/g, "-"),
-                    caption: "GAME WINNER",
-                    timestamp: "3D AGO",
-                    fire: 612,
-                    cold: 88,
-                    hype: 410,
-                  }}
-                />
-              )}
+            {displayedHighlights.map((h) => (
+              <HighlightCard key={h.id} h={h} />
+            ))}
           </div>
         </Section>
       </div>
@@ -455,30 +398,6 @@ function RankRow({
           {value}
         </span>
       </span>
-    </div>
-  );
-}
-
-function RankCard({
-  label,
-  value,
-  accent,
-  text = false,
-}: {
-  label: string;
-  value: string | number;
-  accent: "varsity" | "win-gold";
-  text?: boolean;
-}) {
-  const color = accent === "varsity" ? "text-varsity" : "text-win-gold";
-  return (
-    <div className="hairline rounded-md p-3 bg-white">
-      <div className="font-mono text-[9px] tracking-hud uppercase text-sweat mb-1">
-        {label}
-      </div>
-      <div className={`display-tight ${color} ${text ? "text-[20px]" : "text-[32px]"} tabular leading-none`}>
-        {text ? value : `#${value}`}
-      </div>
     </div>
   );
 }
