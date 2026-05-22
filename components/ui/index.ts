@@ -6,6 +6,7 @@ export { Clock } from "./Clock";
 export { PhoneFrame, StatusBar } from "./PhoneFrame";
 export { ScreenBack } from "./ScreenBack";
 export { SpotlightCursor } from "./SpotlightCursor";
+export { ModelViewer } from "./ModelViewer";
 export {
   IOSStatusBar,
   IOSHomeIndicator,

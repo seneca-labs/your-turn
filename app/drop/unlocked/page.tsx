@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
 import anime from "animejs";
-import { PhoneFrame, ScreenBack } from "@/components/ui";
+import { PhoneFrame, ScreenBack, ModelViewer } from "@/components/ui";
 import { scrambleText } from "@/lib/animations";
-import { Sneaker, Wing, Jumpman } from "@/components/icons";
+import { Wing, Jumpman } from "@/components/icons";
 
 export default function DropUnlocked() {
   const sneakerRef = useRef<HTMLDivElement>(null);
@@ -13,7 +13,6 @@ export default function DropUnlocked() {
   const stampRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Jumpman silhouette flies in first
     anime({
       targets: jumpmanRef.current,
       scale: [0.4, 1],
@@ -23,7 +22,6 @@ export default function DropUnlocked() {
       easing: "easeOutExpo",
     });
 
-    // Stamp clamps in
     anime({
       targets: stampRef.current,
       scale: [2.4, 1],
@@ -33,11 +31,9 @@ export default function DropUnlocked() {
       easing: "easeOutBack",
     });
 
-    // Sneaker scales in after the Jumpman lands
     anime({
       targets: sneakerRef.current,
       scale: [0.5, 1.05, 1],
-      rotate: [-12, 0],
       opacity: [0, 1],
       duration: 1200,
       delay: 400,
@@ -132,12 +128,24 @@ export default function DropUnlocked() {
           </div>
         </div>
 
-        {/* Sneaker hero */}
-        <div className="relative w-full" ref={sparkRef}>
-          <div ref={sneakerRef} className="relative px-4">
-            <Sneaker
-              className="w-full h-auto drop-shadow-[0_0_30px_rgba(212,169,56,0.45)]"
-              colorVariant="varsity"
+        {/* 3D sneaker hero */}
+        <div className="relative w-full flex-1 flex items-center justify-center" ref={sparkRef}>
+          <div
+            ref={sneakerRef}
+            className="relative w-full h-[340px]"
+            style={{
+              filter: "drop-shadow(0 18px 36px rgba(212,169,56,0.35))",
+            }}
+          >
+            <ModelViewer
+              src="/air-jordan.glb"
+              alt="Air Jordan 1 — West 4th colorway"
+              autoRotate
+              cameraControls
+              exposure={1.0}
+              shadowIntensity={0.9}
+              shadowSoftness={0.8}
+              className="w-full h-full"
             />
           </div>
         </div>
@@ -158,7 +166,6 @@ export default function DropUnlocked() {
             Earned for holding the court 10 days
           </div>
 
-          {/* CTAs */}
           <div className="mt-6 grid grid-cols-2 gap-2">
             <button className="py-3 rounded-xs border border-jordan-black/30 font-mono text-[10px] tracking-hud uppercase text-jordan-black hover:border-jordan-black flex items-center justify-center gap-2">
               <Wing size={12} className="text-jordan-black" />

@@ -9,25 +9,25 @@ export default function JuryPage() {
   const yesRef = useRef<HTMLDivElement>(null);
   const noRef = useRef<HTMLDivElement>(null);
   const tickerRef = useRef<HTMLSpanElement>(null);
+  const screenFlashRef = useRef<HTMLDivElement>(null);
+  const barGlowRef = useRef<HTMLDivElement>(null);
   const [locked, setLocked] = useState(false);
   const [voters, setVoters] = useState(0);
+  const [yourVote, setYourVote] = useState<"yes" | "no" | null>(null);
 
   useEffect(() => {
     if (questionRef.current) scrambleText(questionRef.current, "WAS IT A FOUL?", 700);
-
     if (yesRef.current) voteBar(yesRef.current, 27, 2400);
     if (noRef.current) voteBar(noRef.current, 73, 2400);
 
-    const t = setInterval(() => setVoters((v) => Math.min(v + 2 + Math.floor(Math.random() * 3), 247)), 70);
+    const t = setInterval(
+      () => setVoters((v) => Math.min(v + 2 + Math.floor(Math.random() * 3), 247)),
+      70,
+    );
 
+    // Auto-lock at 2.7s if user hasn't voted by then
     const lockT = setTimeout(() => {
-      setLocked(true);
-      anime({
-        targets: ".lock-flash",
-        opacity: [0, 1, 0],
-        duration: 700,
-        easing: "easeOutExpo",
-      });
+      lockIn();
       clearInterval(t);
     }, 2700);
 
@@ -35,16 +35,59 @@ export default function JuryPage() {
       clearInterval(t);
       clearTimeout(lockT);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (tickerRef.current) tickerRef.current.textContent = String(voters);
   }, [voters]);
 
+  function lockIn() {
+    setLocked(true);
+    if (barGlowRef.current) {
+      anime({
+        targets: barGlowRef.current,
+        opacity: [0, 1, 0.35],
+        duration: 700,
+        easing: "easeOutExpo",
+      });
+    }
+  }
+
+  function handleVote(vote: "yes" | "no") {
+    if (locked || yourVote) return;
+    setYourVote(vote);
+
+    // Full-screen pulse — vote-side color
+    if (screenFlashRef.current) {
+      screenFlashRef.current.style.background =
+        vote === "yes"
+          ? "radial-gradient(circle at 50% 50%, rgba(206,17,38,0.35) 0%, rgba(206,17,38,0) 70%)"
+          : "radial-gradient(circle at 50% 50%, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0) 70%)";
+      anime({
+        targets: screenFlashRef.current,
+        opacity: [0, 1, 0],
+        duration: 700,
+        easing: "easeOutExpo",
+      });
+    }
+
+    // Lock in immediately on vote (skip the auto timer)
+    setTimeout(() => lockIn(), 300);
+  }
+
   return (
     <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
       <div className="absolute inset-0 asphalt-bg opacity-40" />
+
+      {/* Full-screen vote-flash overlay */}
+      <div
+        ref={screenFlashRef}
+        className="absolute inset-0 pointer-events-none z-30"
+        style={{ opacity: 0 }}
+      />
+
       <div className="relative h-full flex flex-col px-5 pt-12 pb-8">
         {/* Disputed label */}
         <div className="flex items-center gap-2">
@@ -69,16 +112,40 @@ export default function JuryPage() {
         {/* YES / NO buttons */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <button
-            disabled={locked}
-            className="display-tight text-[44px] py-6 rounded-xs bg-jordan-black text-white hover:bg-varsity transition-colors"
+            disabled={locked || yourVote !== null}
+            onClick={() => handleVote("yes")}
+            className={`display-tight text-[44px] py-6 rounded-xs transition-all relative overflow-hidden ${
+              yourVote === "yes"
+                ? "bg-varsity text-white scale-[1.02] shadow-[0_8px_22px_rgba(206,17,38,0.35)]"
+                : yourVote === "no"
+                ? "bg-jordan-black/30 text-white/50"
+                : "bg-jordan-black text-white hover:bg-varsity"
+            }`}
           >
             YES
+            {yourVote === "yes" && (
+              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[8px] tracking-label uppercase font-bold opacity-90">
+                ✓ Your Vote
+              </span>
+            )}
           </button>
           <button
-            disabled={locked}
-            className="display-tight text-[44px] py-6 rounded-xs bg-white border border-jordan-black text-jordan-black hover:bg-jordan-black hover:text-white transition-colors"
+            disabled={locked || yourVote !== null}
+            onClick={() => handleVote("no")}
+            className={`display-tight text-[44px] py-6 rounded-xs border transition-all relative overflow-hidden ${
+              yourVote === "no"
+                ? "bg-jordan-black text-white border-jordan-black scale-[1.02] shadow-[0_8px_22px_rgba(10,10,10,0.35)]"
+                : yourVote === "yes"
+                ? "bg-white/40 text-jordan-black/40 border-jordan-black/20"
+                : "bg-white border-jordan-black text-jordan-black hover:bg-jordan-black hover:text-white"
+            }`}
           >
             NO
+            {yourVote === "no" && (
+              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[8px] tracking-label uppercase font-bold opacity-90">
+                ✓ Your Vote
+              </span>
+            )}
           </button>
         </div>
 
@@ -88,10 +155,19 @@ export default function JuryPage() {
             <span className="text-jordan-black/70">Yes</span>
             <span className="text-jordan-black/70">No</span>
           </div>
-          <div className="relative h-2.5 rounded-xs bg-jordan-black/10 overflow-hidden flex">
+          <div className="relative h-3 rounded-xs bg-jordan-black/10 overflow-hidden flex">
             <div ref={yesRef} className="h-full bg-varsity" style={{ width: 0 }} />
             <div ref={noRef} className="h-full bg-jordan-black" style={{ width: 0 }} />
-            <div className="lock-flash absolute inset-0 bg-win-gold opacity-0 pointer-events-none" />
+            {/* Outside glow ring instead of opaque overlay — bar stays visible underneath */}
+            <div
+              ref={barGlowRef}
+              className="absolute -inset-0.5 rounded-xs pointer-events-none"
+              style={{
+                opacity: 0,
+                boxShadow:
+                  "0 0 0 1px #D4A938, 0 0 16px rgba(212,169,56,0.55), 0 0 32px rgba(212,169,56,0.30)",
+              }}
+            />
           </div>
           <div className="flex items-center justify-between font-mono text-[11px] tracking-hud tabular">
             <span className="text-varsity">27%</span>
@@ -106,9 +182,17 @@ export default function JuryPage() {
               0
             </span>{" "}
             voting
+            {yourVote && (
+              <span className="ml-2 text-jordan-black/70">
+                · You voted{" "}
+                <span className={yourVote === "yes" ? "text-varsity font-bold" : "text-jordan-black font-bold"}>
+                  {yourVote.toUpperCase()}
+                </span>
+              </span>
+            )}
           </span>
           {locked ? (
-            <span className="text-win-gold">Result · No Foul</span>
+            <span className="text-win-gold font-bold">Result · No Foul</span>
           ) : (
             <span className="text-jordan-black/60">Tallying</span>
           )}

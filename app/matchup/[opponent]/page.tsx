@@ -61,8 +61,10 @@ export default function MatchupPage() {
 
     const finalSelf = opp.matchVsSelf.finalScoreSelf;
     const finalOpp = opp.matchVsSelf.finalScoreOpp;
-    if (scoreSelfRef.current) animateNumber(scoreSelfRef.current, finalSelf, 1800, 500);
-    if (scoreOppRef.current) animateNumber(scoreOppRef.current, finalOpp, 1800, 500);
+    const SCORE_DELAY = 500;
+    const SCORE_DURATION = 1800;
+    if (scoreSelfRef.current) animateNumber(scoreSelfRef.current, finalSelf, SCORE_DURATION, SCORE_DELAY);
+    if (scoreOppRef.current) animateNumber(scoreOppRef.current, finalOpp, SCORE_DURATION, SCORE_DELAY);
 
     if (courtRef.current) {
       const dots = courtRef.current.querySelectorAll(".shot-dot");
@@ -76,11 +78,17 @@ export default function MatchupPage() {
       });
     }
 
+    // PTS stats track the score in lockstep. All other stats stagger later.
     statRefs.current.forEach((el, i) => {
       if (!el) return;
       const target = el.dataset.value || "0";
       const fmt = el.dataset.fmt || "num";
-      animateStat(el, target, fmt, 800, 1200 + i * 60);
+      const isPts = el.dataset.stat === "PTS";
+      if (isPts) {
+        animateStat(el, target, fmt, SCORE_DURATION, SCORE_DELAY);
+      } else {
+        animateStat(el, target, fmt, 800, 1200 + i * 60);
+      }
     });
   }, [opp]);
 
@@ -440,6 +448,7 @@ function StatBox({
               }}
               data-value={String(v)}
               data-fmt={fmt}
+              data-stat={k}
               className="display-tight text-jordan-black text-[20px] tabular leading-none mt-0.5 block"
             >
               {fmt === "str" ? v : 0}
