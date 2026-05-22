@@ -283,6 +283,7 @@ export const highlights: Highlight[] = [
     cold: 134,
     fire: 581,
     timestamp: "5H AGO",
+    video: "/highlights/gamewinner.mp4",
   },
   {
     id: "h3",
