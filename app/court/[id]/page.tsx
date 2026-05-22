@@ -111,6 +111,8 @@ export default function CourtLivePage() {
 
       <IOSStatusBar tone="light" />
 
+      <div className="relative h-full flex flex-col">
+
       {/* Header */}
       <div ref={headerRef} className="relative pt-[44px] px-4 pb-3">
         <div className="hd-row flex items-center justify-between mb-2">
@@ -183,7 +185,7 @@ export default function CourtLivePage() {
               />
             </>
           )}
-          <div className="stat-row hairline rounded-md p-2 bg-white">
+          <div className="stat-row hairline rounded-md p-2 bg-white mt-auto">
             <div className="font-mono text-[8px] tracking-label uppercase text-sweat">
               Reps for
             </div>
@@ -252,6 +254,8 @@ export default function CourtLivePage() {
         <div className="mt-2 text-center font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
           Tap to lock in · Decline forfeits position
         </div>
+      </div>
+
       </div>
 
       <IOSHomeIndicator tone="light" />
