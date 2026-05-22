@@ -5,21 +5,9 @@ import { PhoneFrame, ScreenBack } from "@/components/ui";
 import { Jumpman } from "@/components/icons";
 
 export default function CapturePage() {
-  const tagRef = useRef<HTMLDivElement>(null);
   const hypeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Tag drift
-    if (tagRef.current) {
-      anime({
-        targets: tagRef.current,
-        translateX: [-8, 8],
-        duration: 2400,
-        direction: "alternate",
-        loop: true,
-        easing: "easeInOutSine",
-      });
-    }
     // Hype meter fluctuate
     if (hypeRef.current) {
       anime({
@@ -34,98 +22,68 @@ export default function CapturePage() {
   }, []);
 
   return (
-    <PhoneFrame bg="#FFFFFF">
+    <PhoneFrame bg="#000000">
       <ScreenBack />
-      {/* Viewfinder — stylized basketball court scene */}
-      <div className="absolute inset-0 asphalt-bg" />
+
+      {/* Live viewfinder — looping video */}
+      <video
+        src="/capture-backdrop.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+
+      {/* Subtle top/bottom darkening so HUD chrome stays legible */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,0.9) 100%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 18%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.65) 100%)",
         }}
       />
-      {/* "Player" silhouette as geometric body shape */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 390 844"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {/* Court ground perspective lines */}
-        <g stroke="rgba(10,10,10,0.06)" strokeWidth="1">
-          <line x1="0" y1="660" x2="390" y2="660" />
-          <line x1="60" y1="660" x2="-80" y2="844" />
-          <line x1="130" y1="660" x2="80" y2="844" />
-          <line x1="200" y1="660" x2="195" y2="844" />
-          <line x1="270" y1="660" x2="320" y2="844" />
-          <line x1="330" y1="660" x2="460" y2="844" />
-        </g>
-      </svg>
 
-      {/* Hooper subject — actual Jumpman silhouette centered in viewfinder */}
-      <div
-        className="absolute z-10 pointer-events-none"
-        style={{ left: "50%", top: "44%", transform: "translate(-50%, -50%)" }}
-      >
-        <Jumpman size={260} className="text-jordan-black drop-shadow-[0_0_2px_rgba(10,10,10,0.4)]" />
-      </div>
-
-      {/* HUD chrome */}
-      {/* Top */}
+      {/* HUD chrome — top */}
       <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between font-mono text-[10px] tracking-hud uppercase">
         <div className="flex items-center gap-2">
           <Jumpman size={14} className="text-varsity" />
-          <span className="text-jordan-black/80">Capture</span>
+          <span className="text-white/90">Capture</span>
         </div>
-        <div className="flex items-center gap-2 px-2 py-1 rounded-xs border border-hype">
+        <div className="flex items-center gap-2 px-2 py-1 rounded-xs border border-hype bg-jordan-black/40 backdrop-blur-sm">
           <span className="inline-block h-2 w-2 rounded-full bg-hype animate-rec-blink" />
           <span className="text-hype tabular">REC · 00:08</span>
         </div>
       </div>
 
-      {/* Corner frame brackets */}
       <FrameBrackets />
 
-      {/* Tag overlay */}
-      <div
-        ref={tagRef}
-        className="absolute top-[33%] left-1/2 -translate-x-1/2 z-20"
-      >
-        <div className="relative">
-          <div className="absolute -top-2 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-white border-l border-t border-varsity" />
-          <span className="inline-flex items-center gap-1 rounded-xs border border-varsity bg-white px-2 py-1 font-mono text-[10px] tracking-hud uppercase text-jordan-black">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-varsity" />
-            SWEET SHADOW
-          </span>
-        </div>
-      </div>
-
       {/* Hype meter (right vertical bar) */}
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-44 w-2 rounded-xs bg-jordan-black/10 overflow-hidden">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 h-44 w-2 rounded-xs bg-white/15 overflow-hidden">
         <div
           ref={hypeRef}
           className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-varsity via-hype to-win-gold"
           style={{ height: "60%" }}
         />
       </div>
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 translate-y-28 z-20 font-mono text-[8px] tracking-label uppercase text-sweat">
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 translate-y-28 z-20 font-mono text-[8px] tracking-label uppercase text-white/70">
         HYPE
       </div>
 
       {/* Bottom controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 px-5 pb-6 pt-3 bg-gradient-to-t from-white to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-5 pb-6 pt-3 bg-gradient-to-t from-jordan-black/80 to-transparent">
         <div className="flex items-end justify-between mb-4">
-          <button className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/70">
+          <button className="font-mono text-[10px] tracking-hud uppercase text-white/80">
             Album
           </button>
-          <button className="h-16 w-16 rounded-full border-4 border-jordan-black bg-varsity flex items-center justify-center">
-            <span className="h-12 w-12 rounded-full bg-varsity ring-2 ring-jordan-black" />
+          <button className="h-16 w-16 rounded-full border-4 border-white bg-varsity flex items-center justify-center">
+            <span className="h-12 w-12 rounded-full bg-varsity ring-2 ring-white" />
           </button>
-          <button className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/70">
+          <button className="font-mono text-[10px] tracking-hud uppercase text-white/80">
             Flip
           </button>
         </div>
-        <button className="w-full py-3 rounded-xs bg-white border border-varsity font-mono text-[11px] tracking-hud uppercase text-varsity hover:bg-varsity hover:text-white transition-colors">
+        <button className="w-full py-3 rounded-xs bg-jordan-black/60 backdrop-blur-sm border border-varsity font-mono text-[11px] tracking-hud uppercase text-varsity hover:bg-varsity hover:text-white transition-colors">
           Tag Highlight
         </button>
       </div>
@@ -134,7 +92,7 @@ export default function CapturePage() {
 }
 
 function FrameBrackets() {
-  const corner = "absolute h-6 w-6 border-jordan-black/50";
+  const corner = "absolute h-6 w-6 border-white/70";
   return (
     <>
       <span className={`${corner} top-12 left-3 border-l border-t`} />
