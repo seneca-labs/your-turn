@@ -12,7 +12,6 @@ export default function GameLive() {
   const homeRef = useRef<HTMLSpanElement>(null);
   const awayRef = useRef<HTMLSpanElement>(null);
 
-  // Simulate point ticks
   useEffect(() => {
     const t1 = setTimeout(() => {
       if (homeRef.current) flipNumber(homeRef.current, "8");
@@ -60,90 +59,84 @@ export default function GameLive() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 50% 35%, rgba(206,17,38,0.08) 0%, rgba(0,0,0,0) 60%)",
+            "radial-gradient(circle at 50% 35%, rgba(206,17,38,0.06) 0%, rgba(255,255,255,0) 60%)",
         }}
       />
-      {/* Court visualization underneath */}
-      <div className="absolute inset-0 pt-20 pb-32 px-2 opacity-70">
+      <div className="absolute inset-0 pt-44 pb-32 px-2 opacity-70">
         <CourtSVG className="w-full h-full" />
       </div>
 
-      {/* Top score bar */}
-      <div className="relative pt-3 px-4 hairline-b pb-3 bg-white/60 backdrop-blur-sm">
-        <div className="flex items-center justify-between font-mono text-[9px] tracking-label uppercase text-sweat mb-2">
-          <div className="flex items-center gap-2">
-            <Jumpman size={12} className="text-varsity" />
-            <span>Live · Court 3</span>
+      {/* Unified scoreboard card */}
+      <div className="relative pt-3 px-3 hairline-b pb-3 bg-white/85 backdrop-blur-md">
+        <div className="hairline rounded-md bg-white shadow-[0_2px_10px_rgba(10,10,10,0.05)] px-3 py-2.5">
+          {/* Meta row */}
+          <div className="flex items-center justify-between font-mono text-[9px] tracking-hud uppercase text-sweat mb-2">
+            <div className="flex items-center gap-1.5">
+              <Jumpman size={11} className="text-varsity" />
+              <span className="text-jordan-black/80">Live · Court 3</span>
+            </div>
+            <span className="tabular text-jordan-black/80">{clock}</span>
           </div>
-          <span className="tabular text-jordan-black">{clock}</span>
-        </div>
-        <div className="flex items-stretch justify-between">
-          <ScoreSide name="SWEET SHADOW" value={home} sideRef={homeRef} isHome />
-          <div className="display-tight text-sweat text-[28px] self-center px-2">
-            —
+
+          {/* Names row */}
+          <div className="flex items-center justify-between font-mono text-[10px] tracking-hud uppercase text-jordan-black mb-0.5">
+            <span className="font-bold">SWEET SHADOW</span>
+            <span className="text-jordan-black/75">TWO-STEP</span>
           </div>
-          <ScoreSide name="TWO-STEP" value={away} sideRef={awayRef} />
-        </div>
-        <div className="mt-2 flex items-center justify-between font-mono text-[8px] tracking-hud uppercase text-jordan-black/60">
-          <span className="text-varsity">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-varsity mr-1 align-middle" />
-            POSSESSION
-          </span>
-          <span>First to 11 · Win by 2</span>
+
+          {/* Centered grouped score */}
+          <div className="flex items-center justify-center gap-3 leading-none">
+            <span
+              ref={homeRef}
+              className="display-tight text-jordan-black text-[52px] tabular w-[1.2em] text-right"
+            >
+              {home}
+            </span>
+            <span className="display-tight text-jordan-black/30 text-[36px] leading-none">
+              —
+            </span>
+            <span
+              ref={awayRef}
+              className="display-tight text-jordan-black text-[52px] tabular w-[1.2em] text-left"
+            >
+              {away}
+            </span>
+          </div>
+
+          {/* Sub-meta row */}
+          <div className="mt-1.5 flex items-center justify-between font-mono text-[9px] tracking-hud uppercase">
+            <span className="inline-flex items-center gap-1.5 text-varsity font-bold">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-varsity animate-live-pulse" />
+              Possession
+            </span>
+            <span className="text-sweat">First to 11 · Win by 2</span>
+          </div>
         </div>
       </div>
 
       {/* Subtle player overlays on court */}
-      <div className="absolute top-[40%] left-[28%] z-10">
-        <span className="px-2 py-1 rounded-xs bg-white/80 border border-varsity font-mono text-[8px] tracking-hud uppercase text-jordan-black">
+      <div className="absolute top-[42%] left-[24%] z-10">
+        <span className="px-2 py-1 rounded-xs bg-white/85 border border-varsity font-mono text-[8px] tracking-hud uppercase text-jordan-black shadow-[0_2px_6px_rgba(10,10,10,0.06)]">
           SWEET SHADOW
         </span>
       </div>
-      <div className="absolute top-[50%] right-[24%] z-10">
-        <span className="px-2 py-1 rounded-xs bg-white/80 border border-jordan-black/40 font-mono text-[8px] tracking-hud uppercase text-jordan-black/80">
+      <div className="absolute top-[55%] right-[22%] z-10">
+        <span className="px-2 py-1 rounded-xs bg-white/85 border border-jordan-black/40 font-mono text-[8px] tracking-hud uppercase text-jordan-black/80 shadow-[0_2px_6px_rgba(10,10,10,0.06)]">
           TWO-STEP
         </span>
       </div>
 
       {/* Bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 hairline-t bg-white/80 backdrop-blur-sm px-4 py-3">
+      <div className="absolute bottom-0 left-0 right-0 hairline-t bg-white/90 backdrop-blur-md px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <button className="call-moment flex-1 py-3 rounded-xs border border-varsity text-varsity font-mono text-[11px] tracking-hud uppercase hover:bg-varsity hover:text-white transition-colors">
+          <button className="call-moment flex-1 py-3 rounded-md border border-varsity text-varsity font-mono text-[11px] tracking-hud uppercase font-bold hover:bg-varsity hover:text-white transition-colors">
             Call Moment
           </button>
-          <button className="px-4 py-3 rounded-xs border border-jordan-black/30 text-jordan-black/70 font-mono text-[11px] tracking-hud uppercase hover:border-jordan-black hover:text-jordan-black">
+          <button className="px-4 py-3 rounded-md border border-jordan-black/25 text-jordan-black/75 font-mono text-[11px] tracking-hud uppercase hover:border-jordan-black hover:text-jordan-black">
             Dispute
           </button>
         </div>
       </div>
     </PhoneFrame>
-  );
-}
-
-function ScoreSide({
-  name,
-  value,
-  sideRef,
-  isHome = false,
-}: {
-  name: string;
-  value: number;
-  sideRef: React.RefObject<HTMLSpanElement>;
-  isHome?: boolean;
-}) {
-  return (
-    <div className={`flex-1 ${isHome ? "text-left" : "text-right"}`}>
-      <div className="font-mono text-[9px] tracking-hud uppercase text-jordan-black/70 truncate">
-        {name}
-      </div>
-      <span
-        ref={sideRef}
-        className={`display-tight text-[56px] leading-none tabular block ${
-          isHome ? "text-jordan-black" : "text-jordan-black"
-        }`}
-      >
-        {value}
-      </span>
-    </div>
   );
 }

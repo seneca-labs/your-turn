@@ -5,9 +5,11 @@ import type {
   Highlight,
   LeaderboardRow,
   Drop,
+  ShotMark,
 } from "./types";
 
 export const user: User = {
+  id: "sweet-shadow",
   nickname: "SWEET SHADOW",
   realName: null,
   record: { wins: 12, losses: 3, currentStreak: 4 },
@@ -24,7 +26,76 @@ export const user: User = {
   earnedDrops: 2,
   totalGames: 15,
   joined: "October 2025",
+  photo: "/players/sweet-shadow.png",
+  halfFace: "/half-faces/sweet-shadow.png",
 };
+
+// Shot-chart helpers. Coordinates are 0..1 across a half-court rectangle.
+// x = horizontal, y = vertical (0 at top/rim end, 1 at half-court line).
+const shotsTwoStepSelf: ShotMark[] = [
+  { x: 0.5, y: 0.18, made: true },  // close
+  { x: 0.32, y: 0.28, made: true }, // mid left
+  { x: 0.68, y: 0.34, made: false },
+  { x: 0.5, y: 0.42, made: true },  // free throw line
+  { x: 0.22, y: 0.55, made: true }, // wing 3
+  { x: 0.78, y: 0.58, made: false },
+  { x: 0.5, y: 0.66, made: true },  // top 3
+  { x: 0.36, y: 0.5, made: false },
+];
+const shotsTwoStepOpp: ShotMark[] = [
+  { x: 0.5, y: 0.2, made: false },
+  { x: 0.4, y: 0.3, made: true },
+  { x: 0.6, y: 0.4, made: false },
+  { x: 0.3, y: 0.5, made: true },
+  { x: 0.7, y: 0.55, made: false },
+  { x: 0.5, y: 0.6, made: true },
+  { x: 0.45, y: 0.45, made: false },
+];
+
+const shotsTheJetSelf: ShotMark[] = [
+  { x: 0.5, y: 0.16, made: true },
+  { x: 0.36, y: 0.3, made: true },
+  { x: 0.64, y: 0.3, made: false },
+  { x: 0.5, y: 0.4, made: true },
+  { x: 0.24, y: 0.55, made: true },
+  { x: 0.76, y: 0.58, made: true },
+  { x: 0.5, y: 0.7, made: false },
+  { x: 0.4, y: 0.45, made: true },
+  { x: 0.6, y: 0.5, made: false },
+];
+const shotsTheJetOpp: ShotMark[] = [
+  { x: 0.5, y: 0.22, made: true },
+  { x: 0.4, y: 0.32, made: true },
+  { x: 0.6, y: 0.4, made: true },
+  { x: 0.3, y: 0.55, made: false },
+  { x: 0.7, y: 0.6, made: true },
+  { x: 0.5, y: 0.68, made: false },
+  { x: 0.55, y: 0.45, made: true },
+];
+
+const shotsIcemanSelf: ShotMark[] = [
+  { x: 0.5, y: 0.18, made: true },
+  { x: 0.34, y: 0.28, made: false },
+  { x: 0.66, y: 0.32, made: true },
+  { x: 0.5, y: 0.42, made: true },
+  { x: 0.22, y: 0.55, made: false },
+  { x: 0.78, y: 0.58, made: true },
+  { x: 0.5, y: 0.68, made: true },
+  { x: 0.4, y: 0.46, made: true },
+  { x: 0.6, y: 0.5, made: false },
+  { x: 0.5, y: 0.78, made: true }, // deep
+];
+const shotsIcemanOpp: ShotMark[] = [
+  { x: 0.5, y: 0.18, made: true },
+  { x: 0.38, y: 0.28, made: true },
+  { x: 0.62, y: 0.32, made: false },
+  { x: 0.5, y: 0.4, made: true },
+  { x: 0.26, y: 0.52, made: true },
+  { x: 0.74, y: 0.56, made: true },
+  { x: 0.5, y: 0.66, made: true },
+  { x: 0.45, y: 0.45, made: false },
+  { x: 0.55, y: 0.5, made: true },
+];
 
 export const opponents: Opponent[] = [
   {
@@ -39,10 +110,20 @@ export const opponents: Opponent[] = [
       crossover: "4 ankles",
       closeOut: "+1.2",
     },
+    photo: "/players/two-step.png",
+    halfFace: "/half-faces/two-step.png",
+    matchVsSelf: {
+      finalScoreSelf: 9,
+      finalScoreOpp: 6,
+      selfStats: { pts: 9, fg: "5/8", reb: 4, stl: 2 },
+      oppStats: { pts: 6, fg: "3/7", reb: 3, stl: 1 },
+      shotChartSelf: shotsTwoStepSelf,
+      shotChartOpp: shotsTwoStepOpp,
+    },
   },
   {
-    id: "the-landlord",
-    nickname: "THE LANDLORD",
+    id: "the-jet",
+    nickname: "THE JET",
     record: { wins: 22, losses: 4, currentStreak: 7 },
     homeCourt: "Marcus Garvey",
     rank: { neighborhood: 2 },
@@ -52,10 +133,20 @@ export const opponents: Opponent[] = [
       crossover: "19 ankles",
       closeOut: "+12.4",
     },
+    photo: "/players/the-jet.png",
+    halfFace: "/half-faces/the-jet.png",
+    matchVsSelf: {
+      finalScoreSelf: 11,
+      finalScoreOpp: 9,
+      selfStats: { pts: 11, fg: "6/11", reb: 5, stl: 3 },
+      oppStats: { pts: 9, fg: "5/9", reb: 4, stl: 2 },
+      shotChartSelf: shotsTheJetSelf,
+      shotChartOpp: shotsTheJetOpp,
+    },
   },
   {
-    id: "black-jesus",
-    nickname: "BLACK JESUS",
+    id: "iceman",
+    nickname: "ICEMAN",
     record: { wins: 41, losses: 6, currentStreak: 12 },
     homeCourt: "Rucker",
     rank: { neighborhood: 1, borough: 1 },
@@ -64,6 +155,16 @@ export const opponents: Opponent[] = [
       fadeaway: "91%",
       crossover: "47 ankles",
       closeOut: "+21.0",
+    },
+    photo: "/players/iceman.png",
+    halfFace: "/half-faces/iceman.png",
+    matchVsSelf: {
+      finalScoreSelf: 13,
+      finalScoreOpp: 11,
+      selfStats: { pts: 13, fg: "7/12", reb: 6, stl: 4 },
+      oppStats: { pts: 11, fg: "6/11", reb: 5, stl: 3 },
+      shotChartSelf: shotsIcemanSelf,
+      shotChartOpp: shotsIcemanOpp,
     },
   },
 ];
@@ -139,10 +240,10 @@ export const courtActiveNicknames: Record<string, string[]> = {
     "CROSSCITY",
     "SHAKE",
     "TALL MIKE",
-    "JET",
     "WORKBOOT",
     "QUICK",
     "ICE",
+    "BOOTLEG",
   ],
 };
 
@@ -169,7 +270,7 @@ export const highlights: Highlight[] = [
   },
   {
     id: "h3",
-    player: "THE LANDLORD",
+    player: "THE JET",
     court: "marcus-garvey",
     caption: "POSTER",
     hype: 891,
@@ -180,8 +281,8 @@ export const highlights: Highlight[] = [
 ];
 
 export const leaderboardCity: LeaderboardRow[] = [
-  { rank: 1, nickname: "BLACK JESUS", court: "Rucker", record: "41-6", streak: 12 },
-  { rank: 2, nickname: "THE LANDLORD", court: "Marcus Garvey", record: "22-4", streak: 7 },
+  { rank: 1, nickname: "ICEMAN", court: "Rucker", record: "41-6", streak: 12 },
+  { rank: 2, nickname: "THE JET", court: "Marcus Garvey", record: "22-4", streak: 7 },
   { rank: 3, nickname: "MCNASTY", court: "Brooklyn Tech", record: "18-5", streak: 3 },
   { rank: 4, nickname: "DYCKMAN DON", court: "Dyckman", record: "17-6", streak: 2 },
   { rank: 5, nickname: "BORICUA", court: "Tompkins", record: "16-7", streak: 0 },
@@ -199,7 +300,7 @@ export const leaderboardCourt: LeaderboardRow[] = [
   { rank: 3, nickname: "CROSSCITY", court: "West 4th", record: "13-5", streak: 0 },
   { rank: 4, nickname: "SHAKE", court: "West 4th", record: "9-4", streak: 2 },
   { rank: 5, nickname: "TALL MIKE", court: "West 4th", record: "7-7", streak: 0 },
-  { rank: 6, nickname: "JET", court: "West 4th", record: "6-3", streak: 3 },
+  { rank: 6, nickname: "BOOTLEG", court: "West 4th", record: "6-3", streak: 3 },
   { rank: 7, nickname: "WORKBOOT", court: "West 4th", record: "6-6", streak: 0 },
   { rank: 8, nickname: "QUICK", court: "West 4th", record: "5-4", streak: 1 },
   { rank: 9, nickname: "ICE", court: "West 4th", record: "4-5", streak: 0 },
@@ -243,7 +344,7 @@ export const drops: Drop[] = [
     id: "d6",
     name: "AIR JORDAN 12 / BROOKLYN",
     status: "locked",
-    requirement: "BEAT THE LANDLORD",
+    requirement: "BEAT THE JET",
   },
   {
     id: "d7",
@@ -268,7 +369,7 @@ export const drops: Drop[] = [
 export const teamRoster = [
   "SWEET SHADOW",
   "CROSSCITY",
-  "JET",
+  "BOOTLEG",
   "SHAKE",
   "WORKBOOT",
   "QUICK",
@@ -279,9 +380,10 @@ export const demoOrder: string[] = [
   "/notification",
   "/court/west-4th",
   "/player/sweet-shadow",
+  "/player/the-jet",
   "/matchup/two-step",
-  "/matchup/the-landlord",
-  "/matchup/black-jesus",
+  "/matchup/the-jet",
+  "/matchup/iceman",
   "/game/live",
   "/jury",
   "/capture",
@@ -302,4 +404,14 @@ export function findCourt(id: string): Court | undefined {
 
 export function findOpponent(id: string): Opponent | undefined {
   return opponents.find((o) => o.id === id);
+}
+
+// Lookup by nickname or id — used by /player/[nickname] which works for both
+// the main user (sweet-shadow) and opponents.
+export function findPerson(idOrNickname: string): User | Opponent | undefined {
+  const slug = idOrNickname.toLowerCase().replace(/[\s_]/g, "-");
+  if (slug === user.id) return user;
+  return opponents.find(
+    (o) => o.id === slug || o.nickname.toLowerCase().replace(/\s+/g, "-") === slug,
+  );
 }

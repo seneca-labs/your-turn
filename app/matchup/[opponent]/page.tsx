@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { notFound, useParams } from "next/navigation";
 import anime from "animejs";
 import Link from "next/link";
@@ -10,7 +10,8 @@ import {
   IOSHomeIndicator,
 } from "@/components/ui";
 import { user, opponents, findOpponent } from "@/lib/mockData";
-import { Wing, Avatar, Flame } from "@/components/icons";
+import { Flame } from "@/components/icons";
+import type { ShotMark } from "@/lib/types";
 
 type Intim = "low" | "medium" | "high";
 
@@ -20,98 +21,101 @@ const RANK_LABEL: Record<Intim, string> = {
   high: "Boro King",
 };
 
-const OPP_WEIGHT: Record<
-  Intim,
-  {
-    avatar: number;
-    name: string;
-    bg: string;
-    halo: string;
-    flame: boolean;
-  }
-> = {
-  low: {
-    avatar: 80,
-    name: "text-[34px]",
-    bg: "#FFFFFF",
-    halo: "0 0 0 3px rgba(206,17,38,0.08)",
-    flame: false,
-  },
-  medium: {
-    avatar: 96,
-    name: "text-[42px]",
-    bg: "linear-gradient(180deg, #FFFFFF 0%, #FAF4E5 100%)",
-    halo: "0 0 0 4px rgba(206,17,38,0.14), 0 8px 22px rgba(206,17,38,0.18)",
-    flame: false,
-  },
-  high: {
-    avatar: 116,
-    name: "text-[54px]",
-    bg: "linear-gradient(135deg, #FFFFFF 0%, #F4E6D6 60%, #ECCFB8 100%)",
-    halo:
-      "0 0 0 5px rgba(206,17,38,0.18), 0 0 0 10px rgba(206,17,38,0.06), 0 14px 38px rgba(206,17,38,0.30)",
-    flame: true,
-  },
-};
-
 export default function MatchupPage() {
   const params = useParams<{ opponent: string }>();
   const opp = findOpponent(params.opponent);
 
+  const headerRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const vsRef = useRef<HTMLDivElement>(null);
-  const oppAvatarRef = useRef<HTMLDivElement>(null);
-  const selfAvatarRef = useRef<HTMLDivElement>(null);
+  const scoreSelfRef = useRef<HTMLSpanElement>(null);
+  const scoreOppRef = useRef<HTMLSpanElement>(null);
+  const courtRef = useRef<SVGSVGElement>(null);
+  const statRefs = useRef<HTMLSpanElement[]>([]);
 
   useEffect(() => {
     if (!opp) return;
+    statRefs.current = [];
+
+    anime({
+      targets: headerRef.current,
+      translateY: [-12, 0],
+      opacity: [0, 1],
+      duration: 500,
+      easing: "cubicBezier(0.16, 1, 0.3, 1)",
+    });
     anime({
       targets: leftRef.current,
-      translateX: [-60, 0],
+      translateX: [-40, 0],
       opacity: [0, 1],
-      duration: 600,
+      duration: 700,
       easing: "cubicBezier(0.16, 1, 0.3, 1)",
     });
     anime({
       targets: rightRef.current,
-      translateX: [60, 0],
+      translateX: [40, 0],
       opacity: [0, 1],
-      duration: 600,
-      easing: "cubicBezier(0.16, 1, 0.3, 1)",
-    });
-    anime({
-      targets: [selfAvatarRef.current, oppAvatarRef.current],
-      scale: [0.6, 1],
-      opacity: [0, 1],
-      delay: anime.stagger(60, { start: 100 }),
       duration: 700,
       easing: "cubicBezier(0.16, 1, 0.3, 1)",
     });
     anime({
       targets: vsRef.current,
-      scale: [0.4, 1.12, 1],
+      scale: [0.4, 1.15, 1],
       opacity: [0, 1],
       duration: 700,
-      delay: 320,
+      delay: 280,
       easing: "easeOutBack",
+    });
+
+    // Score tickers — animate up in SS favor.
+    const finalSelf = opp.matchVsSelf.finalScoreSelf;
+    const finalOpp = opp.matchVsSelf.finalScoreOpp;
+    if (scoreSelfRef.current) {
+      animateNumber(scoreSelfRef.current, finalSelf, 1800, 500);
+    }
+    if (scoreOppRef.current) {
+      animateNumber(scoreOppRef.current, finalOpp, 1800, 500);
+    }
+
+    // Shot chart — fade in dots progressively
+    if (courtRef.current) {
+      const dots = courtRef.current.querySelectorAll(".shot-dot");
+      anime({
+        targets: dots,
+        opacity: [0, 1],
+        scale: [0, 1],
+        delay: anime.stagger(50, { start: 1000 }),
+        duration: 320,
+        easing: "easeOutBack",
+      });
+    }
+
+    // Stat line — number count-up
+    statRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const target = parseFloat(el.dataset.value || "0");
+      const fmt = el.dataset.fmt || "num";
+      animateStat(el, target, fmt, 800, 1400 + i * 60);
     });
   }, [opp]);
 
   if (!opp) return notFound();
 
   const intim = opp.intimidation as Intim;
-  const w = OPP_WEIGHT[intim];
+  const m = opp.matchVsSelf;
 
   return (
     <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
-
       <IOSStatusBar tone="light" />
 
       <div className="relative h-full flex flex-col pt-[44px]">
         {/* Header */}
-        <div className="px-5 pb-3 hairline-b flex items-center justify-between">
+        <div
+          ref={headerRef}
+          className="px-5 pt-2 pb-2.5 hairline-b flex items-center justify-between"
+        >
           <div>
             <div className="font-mono text-[9px] tracking-label uppercase text-sweat">
               Tale of the Tape
@@ -145,201 +149,217 @@ export default function MatchupPage() {
                   : "0.5px solid rgba(10,10,10,0.10)",
             }}
           >
-            {w.flame && <Flame size={10} />}
+            {intim === "high" && <Flame size={10} />}
             {RANK_LABEL[intim]}
           </span>
         </div>
 
-        {/* Body — vertical split */}
-        <div className="flex-1 grid grid-cols-2 relative overflow-hidden">
-          {/* LEFT — Sweet Shadow */}
+        {/* VS / Face-off section — half-face backdrops + animated score */}
+        <div className="relative h-[260px] flex-shrink-0 overflow-hidden hairline-b">
+          {/* Left half — Sweet Shadow backdrop */}
           <div
             ref={leftRef}
-            className="asphalt-bg p-4 flex flex-col justify-between hairline-r"
+            className="absolute inset-y-0 left-0 w-1/2 overflow-hidden"
           >
-            <div className="flex flex-col items-start">
-              <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={user.halfFace}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-right"
+              style={{ opacity: 0.28 }}
+              aria-hidden
+            />
+            {/* Inner-edge fade so VS stays clean */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.85) 100%)",
+              }}
+            />
+            {/* Outer-edge fade */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 35%)",
+              }}
+            />
+            {/* Nickname */}
+            <div className="absolute top-3 left-3 z-10">
+              <div className="font-mono text-[9px] tracking-label uppercase text-win-gold mb-0.5 font-bold">
                 Challenger
               </div>
-              <div ref={selfAvatarRef} className="relative mb-3" style={{ opacity: 0 }}>
-                <Avatar size={80} tone="self" />
-                <span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{
-                    boxShadow:
-                      "0 0 0 3px rgba(184,144,42,0.16), 0 6px 18px rgba(184,144,42,0.20)",
-                  }}
-                />
-              </div>
-              <h2 className="display-tight text-jordan-black text-[34px] leading-[0.9]">
+              <h2 className="display-tight text-jordan-black text-[26px] leading-[0.9]">
                 {user.nickname.split(" ").map((word, i) => (
                   <div key={i}>{word}</div>
                 ))}
               </h2>
-              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/55">
-                {user.homeCourt}
-              </div>
             </div>
-            <div className="space-y-2.5">
-              <StatLine
-                label="Record"
-                value={`${user.record.wins}-${user.record.losses}`}
-              />
-              <StatLine
-                label="Streak"
-                value={`W${user.record.currentStreak}`}
-                accent
-              />
-              <StatLine
-                label="Fadeaway"
-                value={user.signatureStats.fadeaway}
-              />
-              <StatLine label="+/-" value={user.signatureStats.closeOut} />
+            {/* Score */}
+            <div className="absolute bottom-3 left-4 z-10">
+              <div className="font-mono text-[8px] tracking-label uppercase text-sweat mb-0.5">
+                Score
+              </div>
+              <span
+                ref={scoreSelfRef}
+                className="display-tight text-jordan-black text-[64px] leading-none tabular"
+                data-value={m.finalScoreSelf}
+              >
+                0
+              </span>
             </div>
           </div>
 
-          {/* RIGHT — Opponent */}
+          {/* Right half — Opponent backdrop */}
           <div
             ref={rightRef}
-            className="p-4 flex flex-col justify-between relative overflow-hidden"
-            style={{ background: w.bg }}
+            className="absolute inset-y-0 right-0 w-1/2 overflow-hidden"
           >
-            {/* High-intimidation atmospheric vignette */}
-            {intim === "high" && (
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(circle at 80% 30%, rgba(206,17,38,0.18) 0%, rgba(206,17,38,0) 60%)",
-                }}
-              />
-            )}
-
-            <div className="flex flex-col items-end relative">
-              <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-3 text-right">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={opp.halfFace}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-left"
+              style={{ opacity: 0.28 }}
+              aria-hidden
+            />
+            {/* Inner-edge fade */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(270deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.85) 100%)",
+              }}
+            />
+            {/* Outer-edge fade + intimidation tint */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  intim === "high"
+                    ? "linear-gradient(270deg, rgba(206,17,38,0.10) 0%, rgba(255,255,255,0) 35%)"
+                    : "linear-gradient(270deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 35%)",
+              }}
+            />
+            {/* Nickname */}
+            <div className="absolute top-3 right-3 z-10 text-right">
+              <div className="font-mono text-[9px] tracking-label uppercase text-sweat mb-0.5 font-bold">
                 {RANK_LABEL[intim]}
               </div>
-              <div
-                ref={oppAvatarRef}
-                className="relative mb-3"
-                style={{ opacity: 0 }}
-              >
-                <Avatar size={w.avatar} tone="challenger" />
-                <span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{ boxShadow: w.halo }}
-                />
-                {w.flame && (
-                  <span
-                    className="absolute -top-1 -right-1 inline-flex items-center justify-center h-6 w-6 rounded-full bg-varsity text-white shadow-[0_2px_10px_rgba(206,17,38,0.5)]"
-                    style={{ boxShadow: "0 0 0 2px #FFFFFF" }}
-                  >
-                    <Flame size={11} />
-                  </span>
-                )}
-              </div>
-              <h2
-                className={`display-tight text-jordan-black ${w.name} leading-[0.9] text-right`}
-              >
+              <h2 className="display-tight text-jordan-black text-[26px] leading-[0.9]">
                 {opp.nickname.split(" ").map((word, i) => (
                   <div key={i}>{word}</div>
                 ))}
               </h2>
-              <div className="mt-2 font-mono text-[9px] tracking-hud uppercase text-jordan-black/55 text-right">
-                {opp.homeCourt}
-              </div>
             </div>
-            <div className="space-y-2.5 relative">
-              <StatLine
-                label="Record"
-                value={`${opp.record.wins}-${opp.record.losses}`}
-                align="right"
-                accent={intim === "high"}
-              />
-              <StatLine
-                label="Streak"
-                value={`W${opp.record.currentStreak}`}
-                accent={opp.record.currentStreak >= 7}
-                align="right"
-              />
-              {opp.signatureStats && (
-                <>
-                  <StatLine
-                    label="Fadeaway"
-                    value={opp.signatureStats.fadeaway}
-                    align="right"
-                  />
-                  <StatLine
-                    label="+/-"
-                    value={opp.signatureStats.closeOut}
-                    align="right"
-                  />
-                </>
-              )}
+            {/* Score */}
+            <div className="absolute bottom-3 right-4 z-10 text-right">
+              <div className="font-mono text-[8px] tracking-label uppercase text-sweat mb-0.5">
+                Score
+              </div>
+              <span
+                ref={scoreOppRef}
+                className="display-tight text-jordan-black text-[64px] leading-none tabular"
+                data-value={m.finalScoreOpp}
+              >
+                0
+              </span>
             </div>
           </div>
 
-          {/* VS overlay */}
+          {/* VS — centered, no squiggle */}
           <div
             ref={vsRef}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none flex flex-col items-center"
           >
-            <div className="relative">
-              <div
-                className="display-tight text-varsity text-[88px] leading-none"
-                style={{ textShadow: "0 0 28px rgba(206,17,38,0.55)" }}
-              >
-                VS
-              </div>
-              <Wing
-                size={44}
-                className="text-varsity absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-50"
-              />
+            <div
+              className="display-tight text-varsity text-[64px] leading-none"
+              style={{ textShadow: "0 4px 24px rgba(206,17,38,0.45)" }}
+            >
+              VS
+            </div>
+            <div className="mt-1 font-mono text-[8px] tracking-label uppercase text-sweat">
+              First to 11
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="hairline-t px-4 pt-3 pb-5 bg-white relative">
-          <div className="flex items-center justify-between font-mono text-[9px] tracking-hud uppercase text-sweat mb-2.5">
-            <span>First to 21 · Crowd judged</span>
-            <span className="text-varsity font-bold">
-              Win → climb 1 spot
-            </span>
+        {/* Shot chart */}
+        <div className="px-4 pt-3 pb-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="font-mono text-[9px] tracking-label uppercase text-sweat flex items-center gap-2">
+              <span className="inline-block h-px w-3 bg-sweat" />
+              Shot Chart
+            </div>
+            <div className="flex items-center gap-3 font-mono text-[8px] tracking-hud uppercase">
+              <span className="flex items-center gap-1.5 text-jordan-black/70">
+                <span className="inline-block h-2 w-2 rounded-full bg-win-gold" />
+                {user.nickname.split(" ")[0]}
+              </span>
+              <span className="flex items-center gap-1.5 text-jordan-black/70">
+                <span className="inline-block h-2 w-2 rounded-full bg-varsity" />
+                {opp.nickname.split(" ")[0]}
+              </span>
+            </div>
           </div>
+          <div className="relative bg-[#F5F2EB] hairline rounded-md p-2">
+            <ShotChart
+              ref={courtRef}
+              selfShots={m.shotChartSelf}
+              oppShots={m.shotChartOpp}
+            />
+          </div>
+        </div>
+
+        {/* Game stats */}
+        <div className="px-4 pb-3 flex-1">
+          <div className="font-mono text-[9px] tracking-label uppercase text-sweat flex items-center gap-2 mb-2">
+            <span className="inline-block h-px w-3 bg-sweat" />
+            Game · Live
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <StatBox
+              label={user.nickname.split(" ")[0]}
+              accent="win-gold"
+              stats={[
+                ["PTS", m.selfStats.pts, "num"],
+                ["FG", m.selfStats.fg, "str"],
+                ["REB", m.selfStats.reb, "num"],
+                ["STL", m.selfStats.stl, "num"],
+              ]}
+              statRefs={statRefs}
+            />
+            <StatBox
+              label={opp.nickname.split(" ")[0]}
+              accent="varsity"
+              stats={[
+                ["PTS", m.oppStats.pts, "num"],
+                ["FG", m.oppStats.fg, "str"],
+                ["REB", m.oppStats.reb, "num"],
+                ["STL", m.oppStats.stl, "num"],
+              ]}
+              statRefs={statRefs}
+            />
+          </div>
+        </div>
+
+        {/* Footer / CTA */}
+        <div className="hairline-t px-4 pt-3 pb-4 bg-white relative">
           <Link
             href="/game/live"
-            className="group relative block w-full text-center py-3.5 rounded-md bg-varsity font-mono text-[12px] tracking-hud uppercase text-white font-bold overflow-hidden"
-            style={{
-              boxShadow: "0 6px 14px rgba(206,17,38,0.30)",
-            }}
+            className="group relative block w-full text-center py-3 rounded-md bg-varsity font-mono text-[12px] tracking-hud uppercase text-white font-bold overflow-hidden"
+            style={{ boxShadow: "0 6px 14px rgba(206,17,38,0.30)" }}
           >
             <span className="relative z-10 inline-flex items-center justify-center gap-2">
               Accept The Run
-              <svg
-                width="14"
-                height="10"
-                viewBox="0 0 14 10"
-                fill="none"
-                className="group-hover:translate-x-1 transition-transform"
-              >
-                <path
-                  d="M1 5 H12 M9 1 L13 5 L9 9"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                />
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none" className="group-hover:translate-x-1 transition-transform">
+                <path d="M1 5 H12 M9 1 L13 5 L9 9" stroke="currentColor" strokeWidth="1.6" />
               </svg>
             </span>
-            <span
-              className="absolute inset-x-0 top-0 h-1/2 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 100%)",
-              }}
-            />
           </Link>
 
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-2.5 flex items-center justify-between">
             <span className="font-mono text-[9px] tracking-label uppercase text-sweat">
               Rotate · {opponents.findIndex((o) => o.id === opp.id) + 1} of{" "}
               {opponents.length}
@@ -365,33 +385,169 @@ export default function MatchupPage() {
   );
 }
 
-function StatLine({
+const ShotChart = forwardRef<
+  SVGSVGElement,
+  { selfShots: ShotMark[]; oppShots: ShotMark[] }
+>(function ShotChart({ selfShots, oppShots }, ref) {
+  return (
+    <svg
+      ref={ref}
+      viewBox="0 0 200 140"
+      preserveAspectRatio="xMidYMid meet"
+      className="w-full h-[150px]"
+      aria-hidden="true"
+    >
+      <rect
+        x="6"
+        y="6"
+        width="188"
+        height="128"
+        fill="none"
+        stroke="rgba(10,10,10,0.35)"
+        strokeWidth="1.2"
+      />
+      <line x1="86" y1="10" x2="114" y2="10" stroke="rgba(10,10,10,0.55)" strokeWidth="1.6" />
+      <circle cx="100" cy="16" r="3" fill="none" stroke="rgba(10,10,10,0.55)" strokeWidth="1.4" />
+      <rect x="82" y="10" width="36" height="50" fill="none" stroke="rgba(10,10,10,0.30)" strokeWidth="1" />
+      <path d="M82 60 A18 18 0 0 0 118 60" fill="none" stroke="rgba(10,10,10,0.30)" strokeWidth="1" />
+      <path
+        d="M82 60 A18 18 0 0 1 118 60"
+        fill="none"
+        stroke="rgba(10,10,10,0.30)"
+        strokeWidth="1"
+        strokeDasharray="3 3"
+      />
+      <path
+        d="M30 10 V32 A42 42 0 0 0 170 32 V10"
+        fill="none"
+        stroke="rgba(10,10,10,0.28)"
+        strokeWidth="1"
+      />
+      <line x1="6" y1="134" x2="194" y2="134" stroke="rgba(10,10,10,0.30)" strokeWidth="1" />
+      <path d="M82 134 A18 18 0 0 0 118 134" fill="none" stroke="rgba(10,10,10,0.30)" strokeWidth="1" />
+
+      {selfShots.map((s, i) => {
+        const cx = 6 + s.x * 188;
+        const cy = 6 + s.y * 128;
+        return (
+          <circle
+            key={`s-${i}`}
+            cx={cx}
+            cy={cy}
+            r="3.6"
+            className="shot-dot"
+            fill={s.made ? "#D4A938" : "none"}
+            stroke="#D4A938"
+            strokeWidth={s.made ? 0 : 1.4}
+            style={{ opacity: 0 }}
+          />
+        );
+      })}
+      {oppShots.map((s, i) => {
+        const cx = 6 + s.x * 188;
+        const cy = 6 + s.y * 128;
+        return (
+          <circle
+            key={`o-${i}`}
+            cx={cx}
+            cy={cy}
+            r="3.2"
+            className="shot-dot"
+            fill={s.made ? "#CE1126" : "none"}
+            stroke="#CE1126"
+            strokeWidth={s.made ? 0 : 1.4}
+            style={{ opacity: 0 }}
+          />
+        );
+      })}
+    </svg>
+  );
+});
+
+function StatBox({
   label,
-  value,
-  align = "left",
-  accent = false,
+  accent,
+  stats,
+  statRefs,
 }: {
   label: string;
-  value: string;
-  align?: "left" | "right";
-  accent?: boolean;
+  accent: "varsity" | "win-gold";
+  stats: Array<[string, string | number, "num" | "str"]>;
+  statRefs: React.MutableRefObject<HTMLSpanElement[]>;
 }) {
+  const color = accent === "varsity" ? "text-varsity" : "text-win-gold";
+  const dot = accent === "varsity" ? "bg-varsity" : "bg-win-gold";
   return (
-    <div
-      className={`flex items-baseline ${
-        align === "right" ? "flex-row-reverse" : ""
-      } justify-between`}
-    >
-      <span className="font-mono text-[9px] tracking-label uppercase text-sweat">
-        {label}
-      </span>
-      <span
-        className={`display-tight tabular text-[22px] ${
-          accent ? "text-win-gold" : "text-jordan-black"
-        }`}
-      >
-        {value}
-      </span>
+    <div className="hairline rounded-md bg-white p-2.5">
+      <div className="flex items-center gap-1.5 mb-2">
+        <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+        <span className={`font-mono text-[9px] tracking-hud uppercase font-bold ${color}`}>
+          {label}
+        </span>
+      </div>
+      <div className="grid grid-cols-4 gap-1">
+        {stats.map(([k, v, fmt]) => (
+          <div key={k} className="text-center">
+            <div className="font-mono text-[8px] tracking-label uppercase text-sweat">
+              {k}
+            </div>
+            <span
+              ref={(el) => {
+                if (el) statRefs.current.push(el);
+              }}
+              data-value={String(v)}
+              data-fmt={fmt}
+              className="display-tight text-jordan-black text-[20px] tabular leading-none mt-0.5 block"
+            >
+              {fmt === "str" ? v : 0}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
+}
+
+function animateNumber(el: HTMLElement, to: number, durationMs = 1200, delay = 0) {
+  const obj = { v: 0 };
+  anime({
+    targets: obj,
+    v: to,
+    round: 1,
+    duration: durationMs,
+    delay,
+    easing: "easeOutExpo",
+    update: () => {
+      el.textContent = String(obj.v);
+    },
+  });
+}
+
+function animateStat(el: HTMLElement, to: number | string, fmt: string, durationMs = 800, delay = 0) {
+  if (fmt === "str") {
+    // For "5/9" type, parse the made part and animate it counting up to final
+    const target = String(to);
+    const parts = target.split("/");
+    if (parts.length === 2) {
+      const num = parseInt(parts[0], 10);
+      const denom = parts[1];
+      const obj = { v: 0 };
+      anime({
+        targets: obj,
+        v: num,
+        round: 1,
+        duration: durationMs,
+        delay,
+        easing: "easeOutExpo",
+        update: () => {
+          el.textContent = `${obj.v}/${denom}`;
+        },
+      });
+      return;
+    }
+    el.textContent = target;
+    return;
+  }
+  const numericTarget = typeof to === "number" ? to : parseFloat(String(to));
+  animateNumber(el, numericTarget, durationMs, delay);
 }

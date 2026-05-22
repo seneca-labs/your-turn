@@ -366,7 +366,7 @@ export default function CourtLivePage() {
               Fadeaway
             </div>
             <div className="font-mono text-[12px] tabular text-jordan-black font-bold">
-              {challenger?.signatureStats.fadeaway}
+              {challenger?.signatureStats?.fadeaway ?? "—"}
             </div>
           </div>
         </div>

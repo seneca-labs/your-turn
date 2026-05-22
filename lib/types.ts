@@ -22,7 +22,30 @@ export interface Team {
   combinedRecord?: string;
 }
 
+export interface GameStats {
+  pts: number;
+  fg: string; // "5/9"
+  reb: number;
+  stl: number;
+}
+
+export interface MatchGame {
+  finalScoreSelf: number;
+  finalScoreOpp: number;
+  selfStats: GameStats;
+  oppStats: GameStats;
+  shotChartSelf: ShotMark[];
+  shotChartOpp: ShotMark[];
+}
+
+export interface ShotMark {
+  x: number; // 0..1 across the half court width
+  y: number; // 0..1 down the half court length
+  made: boolean;
+}
+
 export interface User {
+  id: string;
   nickname: string;
   realName: string | null;
   record: WinLoss;
@@ -39,6 +62,8 @@ export interface User {
   earnedDrops: number;
   totalGames: number;
   joined: string;
+  photo: string;
+  halfFace: string;
 }
 
 export interface Opponent {
@@ -53,6 +78,9 @@ export interface Opponent {
     crossover: string;
     closeOut: string;
   };
+  photo: string;
+  halfFace: string;
+  matchVsSelf: MatchGame;
 }
 
 export interface Court {

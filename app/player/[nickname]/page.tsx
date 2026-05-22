@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { notFound, useParams } from "next/navigation";
 import anime from "animejs";
 import Link from "next/link";
 import {
@@ -10,10 +11,17 @@ import {
   IOSHomeIndicator,
 } from "@/components/ui";
 import { staggerIn, countUp, scaleIn } from "@/lib/animations";
-import { user, highlights } from "@/lib/mockData";
-import { Wing, Flame, Jumpman, Avatar } from "@/components/icons";
+import { user, highlights, findPerson } from "@/lib/mockData";
+import type { Opponent } from "@/lib/types";
+import { Wing, Flame, Jumpman } from "@/components/icons";
+
+function isSelf(p: ReturnType<typeof findPerson>): p is typeof user {
+  return !!p && (p as typeof user).team !== undefined;
+}
 
 export default function ProfilePage() {
+  const params = useParams<{ nickname: string }>();
+  const person = findPerson(params.nickname);
   const heroRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -22,6 +30,7 @@ export default function ProfilePage() {
   const courtRankRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    if (!person) return;
     if (avatarRef.current) {
       anime({
         targets: avatarRef.current,
@@ -49,10 +58,10 @@ export default function ProfilePage() {
       });
     }
     if (statsRef.current) staggerIn(statsRef.current.querySelectorAll(".stat"));
-    if (courtRankRef.current) {
+    if (courtRankRef.current && isSelf(person)) {
       courtRankRef.current.textContent = "0";
       setTimeout(() => {
-        if (courtRankRef.current) countUp(courtRankRef.current, 1, 1200);
+        if (courtRankRef.current) countUp(courtRankRef.current, person.rank.court || 0, 1200);
       }, 600);
     }
     rankRefs.current.forEach((el, i) => {
@@ -61,19 +70,24 @@ export default function ProfilePage() {
       el.textContent = "0";
       setTimeout(() => countUp(el, target, 900), 400 + i * 120);
     });
-  }, []);
+  }, [person]);
+
+  if (!person) return notFound();
+
+  const self = isSelf(person);
+  const opp = self ? null : (person as Opponent);
+  const handle = "@" + (self ? person.id : opp!.id);
+  const tone = self ? "win-gold" : "varsity";
 
   return (
     <PhoneFrame bg="#FFFFFF">
       <ScreenBack />
-
       <IOSStatusBar tone="light" />
 
       <div className="relative h-full overflow-y-auto no-scrollbar grain pt-[44px]">
-        {/* Top app-bar */}
         <div className="relative flex items-center justify-between px-4 pt-2 pb-1.5 z-20">
           <span className="font-mono text-[10px] tracking-hud uppercase text-jordan-black/50">
-            @sweet-shadow
+            {handle}
           </span>
           <button
             aria-label="More"
@@ -87,26 +101,18 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Hero */}
         <div
           ref={heroRef}
           className="relative px-5 pt-6 pb-7 asphalt-bg overflow-hidden"
         >
-          {/* Atmospheric Jumpman watermark — brand layer, not identity */}
           <div
             ref={watermarkRef}
             className="absolute pointer-events-none select-none"
-            style={{
-              right: "-40%",
-              top: "-12%",
-              opacity: 0,
-              transform: "rotate(-8deg)",
-            }}
+            style={{ right: "-40%", top: "-12%", opacity: 0, transform: "rotate(-8deg)" }}
           >
             <Jumpman size={340} className="text-varsity opacity-[0.08]" />
           </div>
 
-          {/* Soft warmth bleed */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -116,61 +122,82 @@ export default function ProfilePage() {
           />
 
           <div className="relative flex flex-col items-center text-center">
-            {/* Avatar */}
-            <div
-              ref={avatarRef}
-              className="relative"
-              style={{ opacity: 0 }}
-            >
-              <Avatar size={104} tone="self" />
-              <span
-                className="absolute inset-0 rounded-full pointer-events-none"
+            <div ref={avatarRef} className="relative" style={{ opacity: 0 }}>
+              <div
+                className="h-[104px] w-[104px] rounded-full overflow-hidden bg-[#F5F2EB]"
                 style={{
-                  boxShadow:
-                    "0 0 0 4px rgba(184,144,42,0.16), 0 12px 28px rgba(184,144,42,0.22)",
+                  boxShadow: self
+                    ? "0 0 0 4px rgba(184,144,42,0.16), 0 12px 28px rgba(184,144,42,0.22)"
+                    : "0 0 0 4px rgba(206,17,38,0.14), 0 12px 28px rgba(206,17,38,0.20)",
                 }}
-              />
-              {/* Verified mark */}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={person.photo}
+                  alt={person.nickname}
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
               <span
-                className="absolute -bottom-1 -right-1 inline-flex items-center justify-center h-6 w-6 rounded-full bg-varsity text-white shadow-[0_2px_8px_rgba(206,17,38,0.4)]"
+                className={`absolute -bottom-1 -right-1 inline-flex items-center justify-center h-6 w-6 rounded-full text-white shadow-[0_2px_8px_rgba(206,17,38,0.4)] ${
+                  self ? "bg-win-gold" : "bg-varsity"
+                }`}
                 aria-label="Verified hooper"
               >
-                <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-                  <path
-                    d="M1 4.5 L4 7.5 L10 1.5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                {self ? (
+                  <Jumpman size={12} className="text-jordan-black" />
+                ) : (
+                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                    <path
+                      d="M1 4.5 L4 7.5 L10 1.5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
               </span>
             </div>
 
-            {/* Name */}
             <h1 className="hero-line display-tight text-jordan-black text-[44px] leading-[0.95] mt-4">
-              {user.nickname}
+              {person.nickname}
             </h1>
 
-            {/* Court · joined */}
             <div className="hero-line mt-2 flex items-center gap-1.5 font-mono text-[11px] tracking-tight text-jordan-black/70">
               <Wing size={12} className="text-varsity" />
-              <span>{user.homeCourt} · {user.neighborhood}</span>
+              <span>
+                {person.homeCourt}
+                {self && ` · ${person.neighborhood}`}
+                {!self && ` · NEIGH #${(person as Opponent).rank.neighborhood}`}
+              </span>
             </div>
 
-            <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
-              Hooper since {user.joined}
-            </div>
+            {self && (
+              <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
+                Hooper since {person.joined}
+              </div>
+            )}
+            {!self && (
+              <div className="hero-line mt-1 font-mono text-[9px] tracking-hud uppercase text-jordan-black/45">
+                {opp!.intimidation === "high"
+                  ? "BORO KING · Approach With Caution"
+                  : opp!.intimidation === "medium"
+                  ? "Veteran · Don't Sleep"
+                  : "Local · Beatable"}
+              </div>
+            )}
 
-            {/* Record · streak */}
             <div className="hero-line mt-4 flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-jordan-black/15 font-mono text-[11px] tabular text-jordan-black">
-                <span className="font-bold">{user.record.wins}</span>
+                <span className="font-bold">{person.record.wins}</span>
                 <span className="text-jordan-black/40">·</span>
-                <span className="text-jordan-black/60">{user.record.losses}</span>
-                <span className="text-jordan-black/40 text-[9px] tracking-hud uppercase ml-0.5">W·L</span>
+                <span className="text-jordan-black/60">{person.record.losses}</span>
+                <span className="text-jordan-black/40 text-[9px] tracking-hud uppercase ml-0.5">
+                  W·L
+                </span>
               </span>
-              {user.record.currentStreak > 0 && (
+              {person.record.currentStreak > 0 && (
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-mono text-[11px] tabular font-bold"
                   style={{
@@ -181,157 +208,194 @@ export default function ProfilePage() {
                   }}
                 >
                   <Flame size={11} />
-                  W{user.record.currentStreak}
+                  W{person.record.currentStreak}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Action row */}
           <div className="hero-line relative mt-5 flex items-center gap-2">
-            <Link
-              href="/court/west-4th"
-              className="flex-1 text-center py-2.5 rounded-md bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(206,17,38,0.28)] active:scale-[0.98] transition-transform"
-            >
-              Challenge
-            </Link>
-            <button
-              className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors"
-            >
-              Share Profile
-            </button>
+            {self ? (
+              <>
+                <Link
+                  href="/court/west-4th"
+                  className="flex-1 text-center py-2.5 rounded-md bg-varsity font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(206,17,38,0.28)] active:scale-[0.98] transition-transform"
+                >
+                  Challenge
+                </Link>
+                <button className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors">
+                  Share Profile
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={`/matchup/${opp!.id}`}
+                  className="flex-1 text-center py-2.5 rounded-md bg-jordan-black font-mono text-[11px] tracking-hud uppercase text-white font-bold shadow-[0_6px_14px_rgba(10,10,10,0.28)] active:scale-[0.98] transition-transform"
+                >
+                  Run It Back
+                </Link>
+                <button className="flex-1 text-center py-2.5 rounded-md border border-jordan-black/20 bg-white font-mono text-[11px] tracking-hud uppercase text-jordan-black/85 hover:border-jordan-black/40 transition-colors">
+                  Scout Report
+                </button>
+              </>
+            )}
           </div>
         </div>
 
-        {/* Signature stats */}
-        <Section title="Signature">
-          <div ref={statsRef} className="grid grid-cols-3 gap-2">
-            <div className="stat">
-              <StatCard label="Fadeaway" value={user.signatureStats.fadeaway} />
+        {/* Signature stats — both profiles share this */}
+        {person.signatureStats && (
+          <Section title="Signature">
+            <div ref={statsRef} className="grid grid-cols-3 gap-2">
+              <div className="stat">
+                <StatCard label="Fadeaway" value={person.signatureStats.fadeaway} />
+              </div>
+              <div className="stat">
+                <StatCard label="Crossover" value={person.signatureStats.crossover.split(" ")[0]} />
+              </div>
+              <div className="stat">
+                <StatCard
+                  label="+/-"
+                  value={person.signatureStats.closeOut}
+                  accent={person.signatureStats.closeOut.startsWith("+")}
+                />
+              </div>
             </div>
-            <div className="stat">
-              <StatCard label="Ankles" value="12" />
-            </div>
-            <div className="stat">
-              <StatCard label="+/-" value={user.signatureStats.closeOut} accent />
-            </div>
-          </div>
-        </Section>
+          </Section>
+        )}
 
-        {/* Ranked — asymmetric hero card + stack */}
-        <Section title="Ranked">
-          <div className="flex gap-2 items-stretch">
-            <div className="relative w-[148px] flex-shrink-0 concrete-bg hairline rounded-md p-3 flex flex-col justify-between overflow-hidden">
-              <div className="font-mono text-[9px] tracking-label uppercase text-win-gold">
-                Court
+        {/* Ranked — different shape for self vs opponent */}
+        {self && (
+          <Section title="Ranked">
+            <div className="flex gap-2 items-stretch">
+              <div className="relative w-[148px] flex-shrink-0 concrete-bg hairline rounded-md p-3 flex flex-col justify-between overflow-hidden">
+                <div className="font-mono text-[9px] tracking-label uppercase text-win-gold">
+                  Court
+                </div>
+                <div className="flex items-end gap-1 leading-none">
+                  <span className="display-tight text-win-gold text-[14px] mb-1">#</span>
+                  <span
+                    ref={courtRankRef}
+                    className="display-tight text-win-gold text-[88px] tabular leading-[0.8]"
+                    data-value={person.rank.court || 0}
+                  >
+                    1
+                  </span>
+                </div>
+                <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55">
+                  14 day reign
+                </div>
+                <Jumpman
+                  size={48}
+                  className="absolute -bottom-2 -right-2 text-win-gold opacity-20"
+                  style={{ transform: "rotate(-15deg)" }}
+                />
               </div>
-              <div className="flex items-end gap-1 leading-none">
-                <span className="display-tight text-win-gold text-[14px] mb-1">
-                  #
-                </span>
-                <span
-                  ref={courtRankRef}
-                  className="display-tight text-win-gold text-[88px] tabular leading-[0.8]"
-                  data-value={user.rank.court || 0}
-                >
-                  1
-                </span>
-              </div>
-              <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55">
-                14 day reign
-              </div>
-              <Jumpman
-                size={48}
-                className="absolute -bottom-2 -right-2 text-win-gold opacity-20"
-                style={{ transform: "rotate(-15deg)" }}
-              />
-            </div>
 
-            <div className="flex-1 flex flex-col justify-between gap-2">
-              <RankRow
+              <div className="flex-1 flex flex-col justify-between gap-2">
+                <RankRow
+                  label="Neighborhood"
+                  value={person.rank.neighborhood || 0}
+                  refCb={(el) => {
+                    if (el) rankRefs.current[0] = el;
+                  }}
+                />
+                <RankRow
+                  label="City"
+                  value={person.rank.city || 0}
+                  refCb={(el) => {
+                    if (el) rankRefs.current[1] = el;
+                  }}
+                />
+                <RankRow
+                  label="Global"
+                  value={person.rank.global || 0}
+                  refCb={(el) => {
+                    if (el) rankRefs.current[2] = el;
+                  }}
+                  muted
+                />
+              </div>
+            </div>
+          </Section>
+        )}
+
+        {!self && opp && (
+          <Section title="Ranked">
+            <div className="grid grid-cols-2 gap-2">
+              <RankCard
                 label="Neighborhood"
-                value={user.rank.neighborhood || 0}
-                refCb={(el) => {
-                  if (el) rankRefs.current[0] = el;
-                }}
+                value={opp.rank.neighborhood || 0}
+                accent={tone}
               />
-              <RankRow
-                label="City"
-                value={user.rank.city || 0}
-                refCb={(el) => {
-                  if (el) rankRefs.current[1] = el;
-                }}
-              />
-              <RankRow
-                label="Global"
-                value={user.rank.global || 0}
-                refCb={(el) => {
-                  if (el) rankRefs.current[2] = el;
-                }}
-                muted
+              {opp.rank.borough !== undefined && (
+                <RankCard label="Borough" value={opp.rank.borough} accent={tone} />
+              )}
+              <RankCard label="Home Court" value={opp.homeCourt} text accent="varsity" />
+              <RankCard
+                label="Streak"
+                value={`W${opp.record.currentStreak}`}
+                text
+                accent="win-gold"
               />
             </div>
-          </div>
-        </Section>
+          </Section>
+        )}
 
-        {/* Team */}
-        <Section title="Rides for">
-          <div className="flex items-center justify-between hairline rounded-md px-3 py-3 bg-white">
-            <div className="flex items-center gap-2.5">
-              <Avatar size={32} tone="dark" />
-              <div>
-                <div className="display-tight text-jordan-black text-[18px] leading-none">
-                  {user.team.name}
+        {/* Team (self only) */}
+        {self && (
+          <Section title="Rides for">
+            <div className="flex items-center justify-between hairline rounded-md px-3 py-3 bg-white">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-full bg-jordan-black flex items-center justify-center">
+                  <Jumpman size={16} className="text-white" />
                 </div>
-                <div className="mt-0.5 font-mono text-[9px] tracking-hud uppercase text-sweat">
-                  {user.team.roster} roster
+                <div>
+                  <div className="display-tight text-jordan-black text-[18px] leading-none">
+                    {person.team.name}
+                  </div>
+                  <div className="mt-0.5 font-mono text-[9px] tracking-hud uppercase text-sweat">
+                    {person.team.roster} roster
+                  </div>
                 </div>
               </div>
+              <span className="font-mono text-[9px] tracking-hud uppercase text-win-gold font-bold">
+                View
+              </span>
             </div>
-            <span className="font-mono text-[9px] tracking-hud uppercase text-win-gold font-bold">
-              View
-            </span>
-          </div>
-        </Section>
+          </Section>
+        )}
 
-        {/* Highlights */}
+        {/* Highlights — self gets all, opponents get their own */}
         <Section title="Recent" pb="pb-10">
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4">
-            {highlights.map((h) => (
-              <div
-                key={h.id}
-                className="flex-shrink-0 w-[148px] h-[200px] rounded-md hairline overflow-hidden relative bg-white"
-              >
-                <div className="absolute inset-0 asphalt-bg opacity-40" />
-                <Jumpman
-                  size={88}
-                  className="absolute -bottom-3 -right-3 text-varsity opacity-15"
-                  style={{ transform: "rotate(-10deg)" }}
+            {highlights
+              .filter(
+                (h) =>
+                  h.player === person.nickname ||
+                  (self && h.player === person.nickname),
+              )
+              .concat(self ? [] : [])
+              .slice(0, 4)
+              .map((h) => (
+                <HighlightCard key={h.id} h={h} />
+              ))}
+            {/* If opponent has no highlights, show one synthetic placeholder */}
+            {!self &&
+              highlights.filter((h) => h.player === person.nickname).length === 0 && (
+                <HighlightCard
+                  h={{
+                    id: "ghost",
+                    player: person.nickname,
+                    court: opp!.homeCourt.toLowerCase().replace(/\s+/g, "-"),
+                    caption: "GAME WINNER",
+                    timestamp: "3D AGO",
+                    fire: 612,
+                    cold: 88,
+                    hype: 410,
+                  }}
                 />
-
-                {/* Top corner: live dot */}
-                <div className="absolute top-2 right-2">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-hype animate-live-pulse" />
-                </div>
-
-                <div className="absolute inset-0 flex flex-col justify-end p-2.5">
-                  <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55 mb-1">
-                    {h.timestamp}
-                  </div>
-                  <div className="display-tight text-jordan-black text-[13px] leading-[1.05] mb-2">
-                    {h.caption}
-                  </div>
-                  <div className="flex items-center gap-2 text-hype">
-                    <span className="inline-flex items-center gap-1">
-                      <Flame size={11} />
-                      <span className="font-mono text-[10px] tabular font-bold">
-                        {h.fire}
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+              )}
           </div>
         </Section>
       </div>
@@ -391,6 +455,60 @@ function RankRow({
           {value}
         </span>
       </span>
+    </div>
+  );
+}
+
+function RankCard({
+  label,
+  value,
+  accent,
+  text = false,
+}: {
+  label: string;
+  value: string | number;
+  accent: "varsity" | "win-gold";
+  text?: boolean;
+}) {
+  const color = accent === "varsity" ? "text-varsity" : "text-win-gold";
+  return (
+    <div className="hairline rounded-md p-3 bg-white">
+      <div className="font-mono text-[9px] tracking-hud uppercase text-sweat mb-1">
+        {label}
+      </div>
+      <div className={`display-tight ${color} ${text ? "text-[20px]" : "text-[32px]"} tabular leading-none`}>
+        {text ? value : `#${value}`}
+      </div>
+    </div>
+  );
+}
+
+function HighlightCard({ h }: { h: import("@/lib/types").Highlight }) {
+  return (
+    <div className="flex-shrink-0 w-[148px] h-[200px] rounded-md hairline overflow-hidden relative bg-white">
+      <div className="absolute inset-0 asphalt-bg opacity-40" />
+      <Jumpman
+        size={88}
+        className="absolute -bottom-3 -right-3 text-varsity opacity-15"
+        style={{ transform: "rotate(-10deg)" }}
+      />
+      <div className="absolute top-2 right-2">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-hype animate-live-pulse" />
+      </div>
+      <div className="absolute inset-0 flex flex-col justify-end p-2.5">
+        <div className="font-mono text-[8px] tracking-hud uppercase text-jordan-black/55 mb-1">
+          {h.timestamp}
+        </div>
+        <div className="display-tight text-jordan-black text-[13px] leading-[1.05] mb-2">
+          {h.caption}
+        </div>
+        <div className="flex items-center gap-2 text-hype">
+          <span className="inline-flex items-center gap-1">
+            <Flame size={11} />
+            <span className="font-mono text-[10px] tabular font-bold">{h.fire}</span>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
